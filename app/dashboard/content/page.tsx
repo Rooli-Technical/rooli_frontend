@@ -249,7 +249,7 @@ export default function ContentLibraryPage() {
                   <CardContent className="p-0">
                     <div className="relative">
                       <img
-                        src={item.url || "/placeholder.svg"}
+                        src={item.url || "/placeholder.jpg"}
                         alt={item.name}
                         className="w-full h-48 object-cover rounded-t-lg"
                       />
@@ -324,7 +324,7 @@ export default function ContentLibraryPage() {
                   <CardContent className="p-4">
                     <div className="flex items-center space-x-4">
                       <img
-                        src={item.url || "/placeholder.svg"}
+                        src={item.url || "/placeholder.jpg"}
                         alt={item.name}
                         className="w-16 h-16 object-cover rounded-lg"
                       />

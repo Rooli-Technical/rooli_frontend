@@ -1,13 +1,11 @@
 "use client"
 
-import React from "react"
-
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
@@ -170,17 +168,17 @@ export default function InboxPage() {
 
   const handleMarkAsRead = (messageId: string) => {
     // In a real app, this would update the backend
-    console.log("Mark as read:", messageId)
+    // TODO: Implement mark as read functionality
   }
 
   const handleStar = (messageId: string) => {
     // In a real app, this would update the backend
-    console.log("Star message:", messageId)
+    // TODO: Implement star message functionality
   }
 
   const handleReply = () => {
     if (!replyText.trim() || !selectedMessage) return
-    console.log("Reply to:", selectedMessage.id, "with:", replyText)
+    // TODO: Implement reply functionality
     setReplyText("")
   }
 
@@ -279,7 +277,7 @@ export default function InboxPage() {
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
-            <Tabs value={filter} onValueChange={(value) => setFilter(value as any)}>
+            <Tabs value={filter} onValueChange={(value) => setFilter(value as "all" | "unread" | "starred")}>
               <TabsList className="grid w-full grid-cols-3">
                 <TabsTrigger value="all">All</TabsTrigger>
                 <TabsTrigger value="unread">Unread ({unreadCount})</TabsTrigger>
@@ -306,7 +304,7 @@ export default function InboxPage() {
                   <CardContent className="p-4">
                     <div className="flex items-start space-x-3">
                       <Avatar className="w-10 h-10">
-                        <AvatarImage src={message.user.avatar || "/placeholder.svg"} />
+                        <AvatarImage src={message.user.avatar || "/placeholder-user.jpg"} />
                         <AvatarFallback>{message.user.name[0]}</AvatarFallback>
                       </Avatar>
                       <div className="flex-1 min-w-0">
@@ -346,7 +344,7 @@ export default function InboxPage() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
                     <Avatar className="w-12 h-12">
-                      <AvatarImage src={selectedMessage.user.avatar || "/placeholder.svg"} />
+                      <AvatarImage src={selectedMessage.user.avatar || "/placeholder-user.jpg"} />
                       <AvatarFallback>{selectedMessage.user.name[0]}</AvatarFallback>
                     </Avatar>
                     <div>

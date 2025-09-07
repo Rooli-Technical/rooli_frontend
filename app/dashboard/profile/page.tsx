@@ -90,13 +90,13 @@ export default function ProfilePage() {
   const handleSaveProfile = () => {
     setIsEditing(false)
     // In a real app, this would save to backend
-    console.log("Profile saved:", profileData)
+    // TODO: Implement profile save functionality
   }
 
   const handlePreferenceChange = (key: string, value: boolean) => {
     setPreferences((prev) => ({ ...prev, [key]: value }))
     // In a real app, this would save to backend
-    console.log("Preference updated:", key, value)
+    // TODO: Implement preference save functionality
   }
 
   return (

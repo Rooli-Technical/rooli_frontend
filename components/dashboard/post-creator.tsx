@@ -237,7 +237,7 @@ export function PostCreator({ onClose }: PostCreatorProps) {
                 <CardDescription>When to publish</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <RadioGroup value={postType} onValueChange={(value) => setPostType(value as any)}>
+                <RadioGroup value={postType} onValueChange={(value) => setPostType(value as "now" | "schedule" | "draft")}>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="now" id="now" />
                     <Label htmlFor="now">Publish now</Label>

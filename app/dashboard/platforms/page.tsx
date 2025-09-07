@@ -158,20 +158,20 @@ export default function PlatformsPage() {
   const availablePlatforms = platforms.filter((p) => !p.connected)
 
   const handleConnect = (platformId: string) => {
-    console.log("Connecting to platform:", platformId)
+    // TODO: Implement platform connection functionality
     setShowConnectDialog(false)
   }
 
   const handleDisconnect = (platformId: string) => {
-    console.log("Disconnecting from platform:", platformId)
+    // TODO: Implement platform disconnection functionality
   }
 
   const handleSettingChange = (platformId: string, setting: string, value: boolean) => {
-    console.log("Setting change:", platformId, setting, value)
+    // TODO: Implement setting change functionality
   }
 
   const handleSync = (platformId: string) => {
-    console.log("Syncing platform:", platformId)
+    // TODO: Implement platform sync functionality
   }
 
   return (

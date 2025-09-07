@@ -20,7 +20,7 @@ export function InviteMemberDialog({ onClose }: InviteMemberDialogProps) {
 
   const handleInvite = () => {
     // Handle invite logic here
-    console.log("Inviting:", { email, role, message })
+    // TODO: Implement invite functionality
     onClose()
   }
 
