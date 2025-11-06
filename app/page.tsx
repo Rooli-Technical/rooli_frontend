@@ -368,11 +368,6 @@ export default function RooliLandingPage() {
                 </li>
                 <li>
                   <a href="#" className="hover:text-sidebar-foreground transition-colors">
-                    Documentation
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-sidebar-foreground transition-colors">
                     Status
                   </a>
                 </li>
@@ -385,7 +380,7 @@ export default function RooliLandingPage() {
             </div>
           </div>
           <div className="border-t border-sidebar-border mt-8 pt-8 text-center text-muted-foreground">
-            <p>&copy; 2024 Rooli. All rights reserved.</p>
+            <p>&copy; 2025, Rooli - A Cresthub Media Company. All Right Reserved.</p>
           </div>
         </div>
       </footer>
