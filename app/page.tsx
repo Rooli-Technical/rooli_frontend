@@ -337,9 +337,9 @@ export default function RooliLandingPage() {
               <h3 className="font-semibold text-sidebar-foreground mb-4">Company</h3>
               <ul className="space-y-2 text-muted-foreground">
                 <li>
-                  <a href="#" className="hover:text-sidebar-foreground transition-colors">
+                  <Link href="/about" className="hover:text-sidebar-foreground transition-colors">
                     About
-                  </a>
+                  </Link>
                 </li>
                 <li>
                   <a href="#" className="hover:text-sidebar-foreground transition-colors">
@@ -377,9 +377,9 @@ export default function RooliLandingPage() {
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-sidebar-foreground transition-colors">
+                  <Link href="/privacy" className="hover:text-sidebar-foreground transition-colors">
                     Privacy
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
