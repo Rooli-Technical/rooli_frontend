@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
 import { ArrowLeft, Sparkles, Zap, Target, Users, Shield, Rocket, Heart, Building2, MapPin, Calendar, Award } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
+import Image from "next/image"
 
 export default function AboutPage() {
     const [isVisible, setIsVisible] = useState(false)
@@ -39,10 +40,9 @@ export default function AboutPage() {
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex h-16 items-center justify-between">
                         <div className="flex items-center space-x-2">
-                            <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center animate-pulse">
-                                <span className="text-primary-foreground font-bold text-lg">R</span>
-                            </div>
-                            <span className="font-serif font-bold text-xl text-foreground">Rooli</span>
+                            <span className="font-serif font-bold text-xl text-foreground">
+                                <Image src="/logo.png" alt="Rooli" width={68} height={68} />
+                            </span>
                         </div>
                         <Button variant="ghost" size="sm" asChild>
                             <Link href="/">

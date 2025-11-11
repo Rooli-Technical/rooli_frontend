@@ -29,7 +29,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${workSans.variable} ${openSans.variable} antialiased`}>
       <head>
-        <link rel="icon" href="/favicon.png" sizes="any" />
+        <link rel="icon" href="/favicon.svg" sizes="any" />
       </head>
       <body className="font-sans">{children}</body>
     </html>
