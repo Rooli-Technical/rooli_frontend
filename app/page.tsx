@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { ArrowRight, Calendar, BarChart3, Users, Zap, CheckCircle, Star, Play } from "lucide-react"
+import { ArrowRight, Calendar, BarChart3, Users, Zap, CheckCircle, Star, Play, Linkedin } from "lucide-react"
 import Link from "next/link"
+import Image from "next/image"
 
 export default function RooliLandingPage() {
   return (
@@ -12,20 +13,19 @@ export default function RooliLandingPage() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
             <div className="flex items-center space-x-2">
-              <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-lg">R</span>
-              </div>
-              <span className="font-serif font-bold text-xl text-foreground">Rooli</span>
+              <span className="font-serif font-bold text-xl text-foreground">
+                <Image src="/logo.png" alt="Rooli" width={68} height={68} />
+              </span>
             </div>
             <nav className="hidden md:flex items-center space-x-8">
               <a href="#features" className="text-muted-foreground hover:text-foreground transition-colors">
                 Features
               </a>
-              <a href="#pricing" className="text-muted-foreground hover:text-foreground transition-colors">
+              {/* <a href="#pricing" className="text-muted-foreground hover:text-foreground transition-colors">
                 Pricing
-              </a>
+              </a> */}
               <a href="#testimonials" className="text-muted-foreground hover:text-foreground transition-colors">
-                Testimonials
+                Integrations
               </a>
               <Button variant="outline" size="sm" asChild>
                 <Link href="/auth/login">Sign In</Link>
@@ -79,11 +79,14 @@ export default function RooliLandingPage() {
               </Button>
             </div>
             <p className="text-sm text-muted-foreground">
-              No credit card required • 14-day free trial • Cancel anytime
+              No credit card required • 7-day free trial • Cancel anytime
             </p>
           </div>
         </div>
       </section>
+
+      {/* Platform Marquee Section */}
+
 
       {/* Features Section */}
       <section id="features" className="py-24 bg-muted/20">
@@ -178,86 +181,71 @@ export default function RooliLandingPage() {
       </section>
 
       {/* Testimonials Section */}
-      <section id="testimonials" className="py-20">
+      <section id="testimonials" className="py-10">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <div className="text-center ">
             <h2 className="font-serif font-bold text-3xl lg:text-4xl text-foreground mb-4">
-              Trusted by thousands of businesses
+              Quality integrations across major social platforms
             </h2>
             <p className="text-xl text-muted-foreground">
-              See how Rooli is helping teams grow their social media presence
+              Rooli gets your connected across your favorite social platforms.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            <Card className="border-border">
-              <CardContent className="pt-6">
-                <div className="flex items-center mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-4 w-4 fill-primary text-primary" />
-                  ))}
-                </div>
-                <p className="text-muted-foreground mb-4">
-                  "Rooli's AI content generation has saved us 10+ hours per week. Our engagement rates have increased by
-                  150% since we started using it."
-                </p>
-                <div className="flex items-center">
-                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mr-3">
-                    <span className="text-primary font-semibold">SJ</span>
-                  </div>
-                  <div>
-                    <p className="font-semibold text-foreground">Sarah Johnson</p>
-                    <p className="text-sm text-muted-foreground">Marketing Director, TechCorp</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
 
-            <Card className="border-border">
-              <CardContent className="pt-6">
-                <div className="flex items-center mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-4 w-4 fill-primary text-primary" />
-                  ))}
-                </div>
-                <p className="text-muted-foreground mb-4">
-                  "The multi-platform scheduling is a game-changer. We can now maintain consistent presence across all
-                  channels effortlessly."
-                </p>
-                <div className="flex items-center">
-                  <div className="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center mr-3">
-                    <span className="text-secondary font-semibold">MR</span>
-                  </div>
-                  <div>
-                    <p className="font-semibold text-foreground">Mike Rodriguez</p>
-                    <p className="text-sm text-muted-foreground">Social Media Manager, CreativeAgency</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+        </div>
+      </section>
 
-            <Card className="border-border">
-              <CardContent className="pt-6">
-                <div className="flex items-center mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-4 w-4 fill-primary text-primary" />
-                  ))}
-                </div>
-                <p className="text-muted-foreground mb-4">
-                  "The analytics dashboard gives us insights we never had before. We can finally prove ROI on our social
-                  media efforts."
-                </p>
-                <div className="flex items-center">
-                  <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center mr-3">
-                    <span className="text-accent font-semibold">EL</span>
-                  </div>
-                  <div>
-                    <p className="font-semibold text-foreground">Emily Liu</p>
-                    <p className="text-sm text-muted-foreground">CMO, GrowthStartup</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+      <section className="py-12 bg-muted/30 border-y border-border overflow-hidden">
+        <div className="relative">
+          <div className="flex animate-marquee whitespace-nowrap">
+            <div className="flex items-center space-x-16 px-8">
+              <div className="flex items-center justify-center min-w-[120px]">
+                <Image src="/icons/facebook.svg" alt="Facebook" width={60} height={60} className="object-contain" />
+              </div>
+              <div className="flex items-center justify-center min-w-[120px]">
+                <Image src="/icons/instagram.png" alt="Instagram" width={40} height={40} className="object-contain" />
+              </div>
+              <div className="flex items-center justify-center min-w-[120px]">
+                <Image src="/icons/threads.png" alt="Threads" width={40} height={40} className="object-contain" />
+              </div>
+              <div className="flex items-center justify-center min-w-[120px]">
+                <Image src="/icons/x.png" alt="X" width={40} height={40} className="object-contain" />
+              </div>
+              <div className="flex items-center justify-center min-w-[120px]">
+                <Linkedin className="w-10 h-10 text-foreground" />
+              </div>
+              <div className="flex items-center justify-center min-w-[120px]">
+                <Image src="/icons/youtube.svg.png" alt="YouTube" width={60} height={60} className="object-contain" />
+              </div>
+              <div className="flex items-center justify-center min-w-[120px]">
+                <Image src="/icons/tiktok.svg" alt="TikTok" width={60} height={60} className="object-contain" />
+              </div>
+            </div>
+            {/* Duplicate for seamless loop */}
+            <div className="flex items-center space-x-16 px-8">
+              <div className="flex items-center justify-center min-w-[120px]">
+                <Image src="/icons/facebook.svg" alt="Facebook" width={60} height={60} className="object-contain" />
+              </div>
+              <div className="flex items-center justify-center min-w-[120px]">
+                <Image src="/icons/instagram.png" alt="Instagram" width={40} height={40} className="object-contain" />
+              </div>
+              <div className="flex items-center justify-center min-w-[120px]">
+                <Image src="/icons/threads.png" alt="Threads" width={40} height={40} className="object-contain" />
+              </div>
+              <div className="flex items-center justify-center min-w-[120px]">
+                <Image src="/icons/x.png" alt="X" width={40} height={40} className="object-contain" />
+              </div>
+              <div className="flex items-center justify-center min-w-[120px]">
+                <Linkedin className="w-10 h-10 text-foreground" />
+              </div>
+              <div className="flex items-center justify-center min-w-[120px]">
+                <Image src="/icons/youtube.svg.png" alt="YouTube" width={60} height={60} className="object-contain" />
+              </div>
+              <div className="flex items-center justify-center min-w-[120px]">
+                <Image src="/icons/tiktok.svg" alt="TikTok" width={60} height={60} className="object-contain" />
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -301,10 +289,9 @@ export default function RooliLandingPage() {
           <div className="grid md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center space-x-2 mb-4">
-                <div className="h-8 w-8 rounded-lg bg-sidebar-primary flex items-center justify-center">
-                  <span className="text-sidebar-primary-foreground font-bold text-lg">R</span>
-                </div>
-                <span className="font-serif font-bold text-xl text-sidebar-foreground">Rooli</span>
+                <span className="font-serif font-bold text-xl text-sidebar-foreground">
+                  <Image src="/logo.png" alt="Rooli" width={68} height={68} />
+                </span>
               </div>
               <p className="text-muted-foreground">AI-powered social media management for modern businesses.</p>
             </div>
@@ -352,7 +339,7 @@ export default function RooliLandingPage() {
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-sidebar-foreground transition-colors">
+                  <a href="/contact-us" className="hover:text-sidebar-foreground transition-colors">
                     Contact
                   </a>
                 </li>
@@ -380,7 +367,7 @@ export default function RooliLandingPage() {
             </div>
           </div>
           <div className="border-t border-sidebar-border mt-8 pt-8 text-center text-muted-foreground">
-            <p>&copy; 2025, Rooli - A Cresthub Media Company. All Right Reserved.</p>
+            <p>&copy; 2025, Rooli - A Cresthub Media Limited Company. All Right Reserved.</p>
           </div>
         </div>
       </footer>

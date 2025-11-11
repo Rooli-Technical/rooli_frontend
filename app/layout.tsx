@@ -19,7 +19,6 @@ export const metadata: Metadata = {
   title: "Rooli - AI-Powered Social Media Scheduler",
   description:
     "Streamline your social media presence with AI-powered content generation, multi-platform scheduling, and advanced analytics.",
-  generator: "v0.app",
 }
 
 export default function RootLayout({
@@ -29,6 +28,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${workSans.variable} ${openSans.variable} antialiased`}>
+      <head>
+        <link rel="icon" href="/favicon.svg" sizes="any" />
+      </head>
       <body className="font-sans">{children}</body>
     </html>
   )

@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge"
 import { Home, Calendar, BarChart3, Users, Settings, PenTool, ImageIcon, MessageSquare, HelpCircle } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import Image from "next/image"
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: Home },
@@ -29,10 +30,9 @@ export function Sidebar() {
       {/* Logo */}
       <div className="p-6 border-b border-sidebar-border">
         <div className="flex items-center space-x-2">
-          <div className="h-8 w-8 rounded-lg bg-sidebar-primary flex items-center justify-center">
-            <span className="text-sidebar-primary-foreground font-bold text-lg">R</span>
-          </div>
-          <span className="font-serif font-bold text-xl text-sidebar-foreground">Rooli</span>
+          <span className="font-serif font-bold text-xl text-sidebar-foreground">
+            <Image src="/logo.png" alt="Rooli" width={68} height={68} />
+          </span>
         </div>
       </div>
 
@@ -44,11 +44,10 @@ export function Sidebar() {
             <Link key={item.name} href={item.href}>
               <Button
                 variant={isActive ? "secondary" : "ghost"}
-                className={`w-full justify-start ${
-                  isActive
-                    ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                    : "text-muted-foreground hover:text-sidebar-foreground hover:bg-sidebar-accent/50"
-                }`}
+                className={`w-full justify-start ${isActive
+                  ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                  : "text-muted-foreground hover:text-sidebar-foreground hover:bg-sidebar-accent/50"
+                  }`}
               >
                 <item.icon className="mr-3 h-4 w-4" />
                 {item.name}
@@ -71,11 +70,10 @@ export function Sidebar() {
             <Link key={item.name} href={item.href}>
               <Button
                 variant={isActive ? "secondary" : "ghost"}
-                className={`w-full justify-start ${
-                  isActive
-                    ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                    : "text-muted-foreground hover:text-sidebar-foreground hover:bg-sidebar-accent/50"
-                }`}
+                className={`w-full justify-start ${isActive
+                  ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                  : "text-muted-foreground hover:text-sidebar-foreground hover:bg-sidebar-accent/50"
+                  }`}
               >
                 <item.icon className="mr-3 h-4 w-4" />
                 {item.name}

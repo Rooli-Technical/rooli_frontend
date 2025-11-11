@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import Link from "next/link"
 import { ArrowLeft, Mail, Building2, Scale } from "lucide-react"
+import Image from "next/image"
 
 export const metadata = {
     title: "Terms and Conditions - Rooli",
@@ -16,10 +17,9 @@ export default function TermsConditionsPage() {
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex h-16 items-center justify-between">
                         <div className="flex items-center space-x-2">
-                            <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
-                                <span className="text-primary-foreground font-bold text-lg">R</span>
-                            </div>
-                            <span className="font-serif font-bold text-xl text-foreground">Rooli</span>
+                            <span className="font-serif font-bold text-xl text-foreground">
+                                <Image src="/logo.png" alt="Rooli" width={68} height={68} />
+                            </span>
                         </div>
                         <Button variant="ghost" size="sm" asChild>
                             <Link href="/">
