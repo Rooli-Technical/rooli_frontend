@@ -79,7 +79,7 @@ export default function RooliLandingPage() {
               </Button>
             </div>
             <p className="text-sm text-muted-foreground">
-              No credit card required • 14-day free trial • Cancel anytime
+              No credit card required • 7-day free trial • Cancel anytime
             </p>
           </div>
         </div>
@@ -352,7 +352,7 @@ export default function RooliLandingPage() {
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-sidebar-foreground transition-colors">
+                  <a href="/contact-us" className="hover:text-sidebar-foreground transition-colors">
                     Contact
                   </a>
                 </li>
@@ -380,7 +380,7 @@ export default function RooliLandingPage() {
             </div>
           </div>
           <div className="border-t border-sidebar-border mt-8 pt-8 text-center text-muted-foreground">
-            <p>&copy; 2025, Rooli - A Cresthub Media Company. All Right Reserved.</p>
+            <p>&copy; 2025, Rooli - A Cresthub Media Limited Company. All Right Reserved.</p>
           </div>
         </div>
       </footer>
