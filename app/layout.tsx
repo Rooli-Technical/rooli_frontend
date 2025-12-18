@@ -1,37 +1,43 @@
-import type React from "react"
-import type { Metadata } from "next"
-import { Open_Sans, Work_Sans } from "next/font/google"
-import "./globals.css"
+import type React from "react";
+import type { Metadata } from "next";
+import { Open_Sans, Work_Sans } from "next/font/google";
+import "./globals.css";
+import { ReactQueryProvider } from "@/providers/react-query-provider";
 
 const workSans = Work_Sans({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-work-sans",
-})
+});
 
 const openSans = Open_Sans({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-open-sans",
-})
+});
 
 export const metadata: Metadata = {
   title: "Rooli - AI-Powered Social Media Scheduler",
   description:
     "Streamline your social media presence with AI-powered content generation, multi-platform scheduling, and advanced analytics.",
-}
+};
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode
+  children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${workSans.variable} ${openSans.variable} antialiased`}>
+    <html
+      lang="en"
+      className={`${workSans.variable} ${openSans.variable} antialiased`}
+    >
       <head>
         <link rel="icon" href="/favicon.svg" sizes="any" />
       </head>
-      <body className="font-sans">{children}</body>
+      <body className="font-sans">
+        <ReactQueryProvider>{children}</ReactQueryProvider>
+      </body>
     </html>
-  )
+  );
 }
