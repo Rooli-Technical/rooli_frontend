@@ -23,8 +23,23 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useState } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useEffect, useState } from "react";
 import { Eye, EyeClosed } from "lucide-react";
+
+import { RegisterPayload, UserType } from "@/types";
+import { Spinner } from "@/components/ui/spinner";
+import authService from "@/services/auth.service";
+import { useMutation } from "@tanstack/react-query";
+import { useAppStore } from "@/store/app-store";
+import useToast from "@/components/app-toast";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   firstName: z.string().min(2, {
@@ -42,9 +57,16 @@ const formSchema = z.object({
   confirmPassword: z.string().min(8, {
     message: "Confirm password must be at least 8 characters long",
   }),
+  timezone: z.string().min(1, {
+    message: "Please select a timezone",
+  }),
 });
 
 export default function SignupPage() {
+  const router = useRouter();
+  const showToast = useToast();
+  const { setAccessToken, setRefreshToken, setUser, setOrganizationId } =
+    useAppStore();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
@@ -55,9 +77,43 @@ export default function SignupPage() {
       email: "",
       password: "",
       confirmPassword: "",
+      timezone: "Africa/Lagos",
     },
     mode: "onChange",
   });
+
+  const { isPending: isRegisterPending, mutateAsync: registerUser } =
+    useMutation({
+      mutationKey: ["register-user"],
+      mutationFn: async (payload: RegisterPayload) => {
+        const response = await authService.registerUser(payload);
+
+        return response?.data;
+      },
+      onSuccess: (data: {
+        accessToken: string;
+        refreshToken: string;
+        user: UserType;
+        organizationId: string;
+      }) => {
+        const { accessToken, refreshToken, user, organizationId } = data;
+
+        setAccessToken(accessToken);
+        setRefreshToken(refreshToken);
+        setUser(user);
+        setOrganizationId(organizationId);
+        showToast(
+          "Registered successfully, please check your email for verification",
+          "success"
+        );
+        router.push("/auth/onboarding");
+      },
+      onError: (error: any) => {
+        const errorResponse =
+          error.response.data?.message || "Something went wrong";
+        showToast(errorResponse, "error");
+      },
+    });
 
   const watchFirstname = form.watch("firstName");
   const watchLastName = form.watch("lastName");
@@ -74,7 +130,48 @@ export default function SignupPage() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
+    const payload: RegisterPayload = {
+      firstName: values.firstName,
+      lastName: values.lastName,
+      email: values.email,
+      password: values.password,
+      timezone: values.timezone,
+    };
+
+    registerUser(payload);
   }
+
+  function passwordValidation() {
+    if (watchPassword) {
+      if (watchPassword.length < 8) {
+        form.setError("password", {
+          message: "Password must be at least 8 characters long",
+        });
+      } else if (!/[a-z]/.test(watchPassword)) {
+        form.setError("password", {
+          message: "Password must contain at least one lowercase letter",
+        });
+      } else if (!/[A-Z]/.test(watchPassword)) {
+        form.setError("password", {
+          message: "Password must contain at least one uppercase letter",
+        });
+      } else if (!/[0-9]/.test(watchPassword)) {
+        form.setError("password", {
+          message: "Password must contain at least one number",
+        });
+      } else if (!/[!@#$%^&.,*()]/.test(watchPassword)) {
+        form.setError("password", {
+          message: "Password must contain at least one special character",
+        });
+      } else {
+        form.clearErrors("password");
+      }
+    }
+  }
+
+  useEffect(() => {
+    passwordValidation();
+  }, [watchPassword]);
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
@@ -160,15 +257,7 @@ export default function SignupPage() {
                     </FormItem>
                   )}
                 />
-                {/* <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="john@company.com"
-                    className="bg-input border-border"
-                  />
-                </div> */}
+
                 <FormField
                   name="password"
                   control={form.control}
@@ -239,6 +328,32 @@ export default function SignupPage() {
                   )}
                 />
 
+                <FormField
+                  control={form.control}
+                  name="timezone"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Timezone</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="w-full bg-input border-border">
+                            <SelectValue placeholder="Select a timezone" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="Africa/Lagos">
+                            Africa/Lagos
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
                 <div className="flex items-start space-x-2">
                   <Checkbox id="terms" />
                   <Label
@@ -262,7 +377,12 @@ export default function SignupPage() {
                   </Label>
                 </div>
 
-                <Button type="submit" className="w-full">
+                <Button
+                  type="submit"
+                  className="w-full disabled:opacity-50"
+                  disabled={isRegisterPending || isFormEmpty}
+                >
+                  {isRegisterPending && <Spinner />}
                   Create Account
                 </Button>
 

@@ -1,3 +1,4 @@
+import { UserType } from "@/types";
 import { create } from "zustand";
 import { devtools, persist } from "zustand/middleware";
 
@@ -8,6 +9,10 @@ type AuthStoreProps = {
   setRefreshToken: (value: string | null) => void;
   hasHydrated: boolean;
   setHasHydrated: (value: boolean) => void;
+  user: UserType | null;
+  setUser: (value: UserType | null) => void;
+  organizationId: string | null;
+  setOrganizationId: (value: string | null) => void;
 };
 
 export const useAppStore = create<AuthStoreProps>()(
@@ -20,6 +25,10 @@ export const useAppStore = create<AuthStoreProps>()(
         setRefreshToken: (value) => set({ refreshToken: value }),
         hasHydrated: false,
         setHasHydrated: (value) => set({ hasHydrated: value }),
+        user: null,
+        setUser: (value) => set({ user: value }),
+        organizationId: null,
+        setOrganizationId: (value) => set({ organizationId: value }),
       }),
       {
         name: "rooli-store",
