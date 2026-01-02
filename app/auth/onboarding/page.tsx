@@ -12,6 +12,9 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { ChevronLeft, ChevronRight, Check } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import PageLoader from "@/components/page-loader";
+import { useQuery } from "@tanstack/react-query";
+import billingService from "@/services/billing.service";
 
 export default function OnboardingPage() {
   const [step, setStep] = useState(1);
@@ -29,6 +32,21 @@ export default function OnboardingPage() {
 
   const totalSteps = 4;
   const progress = (step / totalSteps) * 100;
+
+  //QUERIES
+  // const { isLoading, data: planList } = useQuery({
+  //   queryKey: ["billing-plans"],
+  //   queryFn: async () => {
+  //     const response = await billingService.getBillingPlans();
+
+  //     return response.data;
+  //   },
+  //   retry: 1,
+  //   refetchOnMount: false,
+  //   refetchOnWindowFocus: false,
+  // });
+
+  //END OF QUERIES
 
   const handleNext = () => {
     if (step < totalSteps) {
@@ -73,6 +91,8 @@ export default function OnboardingPage() {
     }));
   };
 
+  // if (isLoading) return <PageLoader />;
+
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-4xl space-y-8">
@@ -91,20 +111,23 @@ export default function OnboardingPage() {
         <div className="min-h-[400px] flex flex-col justify-center py-8">
           {step === 1 && (
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <PricingStep
-                selectedPlan={formData.pricingPlan}
-                onSelect={(plan) => updateFormData("pricingPlan", plan)}
-              />
-            </div>
-          )}
-          {step === 2 && (
-            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
               <AgencyStep
                 isAgency={formData.isAgency}
                 onSelect={(val) => updateFormData("isAgency", val)}
               />
             </div>
           )}
+
+          {step === 2 && (
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <PricingStep
+                selectedPlan={formData.pricingPlan}
+                onSelect={(plan) => updateFormData("pricingPlan", plan)}
+                plans={[]}
+              />
+            </div>
+          )}
+
           {step === 3 && (
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
               <OrganizationStep

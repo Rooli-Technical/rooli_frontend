@@ -9,12 +9,33 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { formatMoney } from "@/lib/utils";
+
+export type PlanFeatures = {
+  analytics?: boolean;
+  aiCaptions?: boolean;
+  teamFeatures?: boolean;
+  approvalWorkflows?: boolean;
+  collaboratorRoles?: boolean;
+  whiteLabel?: boolean;
+  clientReporting?: boolean;
+  prioritySupport?: boolean;
+  [key: string]: boolean | undefined;
+};
 
 interface PricingStepProps {
   selectedPlan: string;
   onSelect: (plan: string) => void;
+  plans: {
+    id: string;
+    name: string;
+    description: string;
+    price: string;
+    currency: string;
+    interval: string;
+    features: PlanFeatures;
+  }[];
 }
-
 const plans = [
   {
     id: "basic",
@@ -71,36 +92,44 @@ export function PricingStep({ selectedPlan, onSelect }: PricingStepProps) {
         {plans.map((plan) => (
           <Card
             key={plan.id}
-            className={`relative cursor-pointer transition-all hover:border-primary border-2 ${
+            className={`relative cursor-pointer transition-all hover:border-primary border-2 flex flex-col ${
               selectedPlan === plan.id
                 ? "border-primary bg-primary/5"
                 : "border-border"
             }`}
             onClick={() => onSelect(plan.id)}
           >
-            {plan.popular && (
+            {/* {plan.popular && (
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-xs font-bold px-3 py-1 rounded-full">
                 Most Popular
               </div>
-            )}
+            )} */}
             <CardHeader>
               <CardTitle className="font-serif text-xl">{plan.name}</CardTitle>
               <CardDescription>{plan.description}</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-4 flex-1 flex flex-col">
               <div className="text-3xl font-bold">
-                {plan.price}
+                {/* <span className="text-base font-semibold text-primary">
+                  {plan.currency}
+                </span> */}
+                {formatMoney(plan.price)}
                 <span className="text-sm font-normal text-muted-foreground">
                   /mo
                 </span>
               </div>
-              <ul className="space-y-2">
-                {plan.features.map((feature, i) => (
-                  <li key={i} className="flex items-center text-sm">
-                    <Check className="h-4 w-4 mr-2 text-primary" />
-                    {feature}
-                  </li>
-                ))}
+              <ul className="space-y-2 flex-1">
+                {Object.entries(plan.features).map(([key, value], i) => {
+                  if (!value) return null;
+                  return (
+                    <li key={i} className="flex items-center text-sm">
+                      <Check className="h-4 w-4 mr-2 text-primary" />
+                      {key
+                        .replace(/([A-Z])/g, " $1")
+                        .replace(/^./, (str) => str.toUpperCase())}
+                    </li>
+                  );
+                })}
               </ul>
               <Button
                 variant={selectedPlan === plan.id ? "default" : "outline"}
