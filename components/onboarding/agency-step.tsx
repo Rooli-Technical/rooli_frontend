@@ -3,12 +3,12 @@
 import { Card } from "@/components/ui/card";
 import { Building2, User } from "lucide-react";
 
-interface AgencyStepProps {
-  isAgency: boolean | null;
-  onSelect: (isAgency: boolean) => void;
+export interface AgencyStepProps {
+  accountType: string | null;
+  onSelect: (type: string) => void;
 }
 
-export function AgencyStep({ isAgency, onSelect }: AgencyStepProps) {
+export function AgencyStep({ accountType, onSelect }: AgencyStepProps) {
   return (
     <div className="space-y-6">
       <div className="text-center space-y-2">
@@ -23,9 +23,11 @@ export function AgencyStep({ isAgency, onSelect }: AgencyStepProps) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
         <Card
           className={`p-6 cursor-pointer transition-all hover:border-primary border-2 flex flex-col items-center justify-center text-center space-y-4 h-64 ${
-            isAgency === false ? "border-primary bg-primary/5" : "border-border"
+            accountType === "INDIVIDUAL"
+              ? "border-primary bg-primary/5"
+              : "border-border"
           }`}
-          onClick={() => onSelect(false)}
+          onClick={() => onSelect("INDIVIDUAL")}
         >
           <div className="h-16 w-16 rounded-full bg-muted flex items-center justify-center">
             <User className="h-8 w-8 text-muted-foreground" />
@@ -40,9 +42,11 @@ export function AgencyStep({ isAgency, onSelect }: AgencyStepProps) {
 
         <Card
           className={`p-6 cursor-pointer transition-all hover:border-primary border-2 flex flex-col items-center justify-center text-center space-y-4 h-64 ${
-            isAgency === true ? "border-primary bg-primary/5" : "border-border"
+            accountType === "AGENCY"
+              ? "border-primary bg-primary/5"
+              : "border-border"
           }`}
-          onClick={() => onSelect(true)}
+          onClick={() => onSelect("AGENCY")}
         >
           <div className="h-16 w-16 rounded-full bg-muted flex items-center justify-center">
             <Building2 className="h-8 w-8 text-muted-foreground" />

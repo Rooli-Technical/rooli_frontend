@@ -32,3 +32,24 @@ export function formatMoney(inputValue: string): string {
 
   return `${formattedInteger}.${decimalPart}`;
 }
+
+export function addCommas(value: number | string): string {
+  // Convert to string and remove existing commas
+  const numStr = value.toString().replace(/,/g, "");
+
+  // Handle invalid input
+  if (isNaN(Number(numStr))) {
+    return value.toString();
+  }
+
+  // Split into integer and decimal parts
+  const parts = numStr.split(".");
+  const integerPart = parts[0];
+  const decimalPart = parts[1];
+
+  // Add commas to integer part
+  const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+  // Combine with decimal part if it exists
+  return decimalPart ? `${formattedInteger}.${decimalPart}` : formattedInteger;
+}

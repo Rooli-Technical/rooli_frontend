@@ -4,7 +4,6 @@ export type RegisterPayload = {
   firstName: string;
   lastName: string;
   role?: string;
-  timezone: string;
 };
 
 export type LoginPayload = {
@@ -22,4 +21,13 @@ export type UserType = {
   lastActiveAt: string | null;
   id: string;
   isEmailVerified: boolean;
+};
+
+export type CompleteOnboardingPayload = {
+  name: string;
+  timezone: string;
+  email: string;
+  planId: string;
+  userType: string;
+  initialWorkspaceName?: string;
 };

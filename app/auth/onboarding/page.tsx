@@ -5,46 +5,69 @@ import { Button } from "@/components/ui/button";
 import { PricingStep } from "@/components/onboarding/pricing-step";
 import { AgencyStep } from "@/components/onboarding/agency-step";
 import { OrganizationStep } from "@/components/onboarding/organization-step";
-import {
-  SocialMediaStep,
-  SocialAccount,
-} from "@/components/onboarding/social-media-step";
+
 import { Progress } from "@/components/ui/progress";
 import { ChevronLeft, ChevronRight, Check } from "lucide-react";
-import { Card } from "@/components/ui/card";
 import PageLoader from "@/components/page-loader";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import billingService from "@/services/billing.service";
+import authService from "@/services/auth.service";
+import { CompleteOnboardingPayload } from "@/types";
+import useToast from "@/components/app-toast";
+import { Spinner } from "@/components/ui/spinner";
+import { useAppStore } from "@/store/app-store";
 
 export default function OnboardingPage() {
+  const { setOrganizationId, setAccessToken, setRefreshToken } = useAppStore();
+  const showToast = useToast();
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     pricingPlan: "",
-    isAgency: null as boolean | null,
+    accountType: null as string | null,
     organizationName: "",
-    connectedAccounts: [
-      { platform: "Instagram", username: "@rooli_social", connected: false },
-      { platform: "Twitter", username: "@rooli_app", connected: false },
-      { platform: "Facebook", username: "Rooli Inc.", connected: false },
-      { platform: "LinkedIn", username: "Rooli", connected: false },
-    ] as SocialAccount[],
+    initialWorkspaceName: "",
+    organizationEmail: "",
+    timezone: "Africa/Lagos",
   });
 
-  const totalSteps = 4;
+  const totalSteps = 3;
   const progress = (step / totalSteps) * 100;
 
   //QUERIES
-  // const { isLoading, data: planList } = useQuery({
-  //   queryKey: ["billing-plans"],
-  //   queryFn: async () => {
-  //     const response = await billingService.getBillingPlans();
+  const { isLoading, data: planList } = useQuery({
+    queryKey: ["billing-plans"],
+    queryFn: async () => {
+      const response = await billingService.getBillingPlans();
 
-  //     return response.data;
-  //   },
-  //   retry: 1,
-  //   refetchOnMount: false,
-  //   refetchOnWindowFocus: false,
-  // });
+      return response.data;
+    },
+    retry: 1,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+  });
+
+  const { isPending, mutateAsync } = useMutation({
+    mutationKey: ["complete-onboarding"],
+    mutationFn: async (payload: CompleteOnboardingPayload) => {
+      const response = await authService.completeOnboarding(payload);
+
+      return response.data;
+    },
+    onSuccess: (data) => {
+      showToast("Onboarding completed successfully", "success");
+      const { paymentUrl, activeWorkspaceId, refreshToken, accessToken } = data;
+      setOrganizationId(activeWorkspaceId);
+      setAccessToken(accessToken);
+      setRefreshToken(refreshToken);
+
+      window.location.href = paymentUrl;
+    },
+    onError: (error: any) => {
+      const errorResponse =
+        error?.response.data?.message || "Something went wrong";
+      showToast(errorResponse, "error");
+    },
+  });
 
   //END OF QUERIES
 
@@ -52,8 +75,19 @@ export default function OnboardingPage() {
     if (step < totalSteps) {
       setStep(step + 1);
     } else {
-      console.log("Onboarding Complete:", formData);
-      // Here you would typically submit the data to your backend
+      const payload: CompleteOnboardingPayload = {
+        planId: formData.pricingPlan,
+        userType: formData.accountType || "",
+        name: formData.organizationName,
+        email: formData.organizationEmail,
+        timezone: formData.timezone,
+      };
+
+      if (formData.initialWorkspaceName) {
+        payload.initialWorkspaceName = formData.initialWorkspaceName;
+      }
+
+      mutateAsync(payload);
     }
   };
 
@@ -66,13 +100,21 @@ export default function OnboardingPage() {
   const isStepValid = () => {
     switch (step) {
       case 1:
-        return !!formData.pricingPlan;
+        return !!formData.accountType;
       case 2:
-        return formData.isAgency !== null;
+        return !!formData.pricingPlan;
       case 3:
-        return formData.organizationName.length > 2;
-      case 4:
-        return true; // Optional step
+        const isAgency = formData.accountType === "AGENCY";
+        const workspaceValid = isAgency
+          ? formData.initialWorkspaceName &&
+            formData.initialWorkspaceName.length > 2
+          : true;
+        return (
+          formData.organizationName.length > 2 &&
+          workspaceValid &&
+          formData.organizationEmail.length > 5 &&
+          !!formData.timezone
+        );
       default:
         return false;
     }
@@ -82,16 +124,7 @@ export default function OnboardingPage() {
     setFormData((prev) => ({ ...prev, [key]: value }));
   };
 
-  const toggleAccountConnection = (platform: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      connectedAccounts: prev.connectedAccounts.map((acc) =>
-        acc.platform === platform ? { ...acc, connected: !acc.connected } : acc
-      ),
-    }));
-  };
-
-  // if (isLoading) return <PageLoader />;
+  if (isLoading) return <PageLoader />;
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
@@ -112,8 +145,8 @@ export default function OnboardingPage() {
           {step === 1 && (
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
               <AgencyStep
-                isAgency={formData.isAgency}
-                onSelect={(val) => updateFormData("isAgency", val)}
+                accountType={formData.accountType}
+                onSelect={(val) => updateFormData("accountType", val)}
               />
             </div>
           )}
@@ -123,7 +156,8 @@ export default function OnboardingPage() {
               <PricingStep
                 selectedPlan={formData.pricingPlan}
                 onSelect={(plan) => updateFormData("pricingPlan", plan)}
-                plans={[]}
+                plans={planList ?? []}
+                accountType={formData.accountType}
               />
             </div>
           )}
@@ -132,15 +166,11 @@ export default function OnboardingPage() {
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
               <OrganizationStep
                 organizationName={formData.organizationName}
-                onChange={(name) => updateFormData("organizationName", name)}
-              />
-            </div>
-          )}
-          {step === 4 && (
-            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <SocialMediaStep
-                connectedAccounts={formData.connectedAccounts}
-                onToggleConnect={toggleAccountConnection}
+                initialWorkspaceName={formData.initialWorkspaceName}
+                organizationEmail={formData.organizationEmail}
+                timezone={formData.timezone}
+                accountType={formData.accountType}
+                onChange={updateFormData}
               />
             </div>
           )}
@@ -151,7 +181,7 @@ export default function OnboardingPage() {
           <Button
             variant="ghost"
             onClick={handleBack}
-            disabled={step === 1}
+            disabled={step === 1 || isPending}
             className={step === 1 ? "invisible" : ""}
           >
             <ChevronLeft className="mr-2 h-4 w-4" />
@@ -160,10 +190,11 @@ export default function OnboardingPage() {
 
           <Button
             onClick={handleNext}
-            disabled={!isStepValid()}
+            disabled={!isStepValid() || isPending}
             size="lg"
             className="px-8"
           >
+            {isPending && <Spinner />}
             {step === totalSteps ? "Complete Setup" : "Continue"}
             {step === totalSteps ? (
               <Check className="ml-2 h-4 w-4" />

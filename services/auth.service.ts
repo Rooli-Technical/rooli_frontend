@@ -1,4 +1,8 @@
-import { LoginPayload, RegisterPayload } from "@/types";
+import {
+  CompleteOnboardingPayload,
+  LoginPayload,
+  RegisterPayload,
+} from "@/types";
 import axiosInstance from "./axios-instance";
 
 class AuthService {
@@ -14,6 +18,16 @@ class AuthService {
 
   async loginUser(payload: LoginPayload) {
     const response = await axiosInstance(false).post("/auth/login", payload);
+
+    if (response.status === 200 || response.status === 201) {
+      return response.data;
+    }
+
+    throw new Error(response.data.message);
+  }
+
+  async googleAuthUser() {
+    const response = await axiosInstance(false).get("/auth/google");
 
     if (response.status === 200 || response.status === 201) {
       return response.data;
@@ -85,6 +99,19 @@ class AuthService {
 
   async getUserProfile() {
     const response = await axiosInstance(true).get("/auth/profile");
+
+    if (response.status === 200 || response.status === 201) {
+      return response.data;
+    }
+
+    throw new Error(response.data.message);
+  }
+
+  async completeOnboarding(payload: CompleteOnboardingPayload) {
+    const response = await axiosInstance(true).post(
+      "/auth/onboarding",
+      payload
+    );
 
     if (response.status === 200 || response.status === 201) {
       return response.data;
