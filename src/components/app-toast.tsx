@@ -1,8 +1,13 @@
 "use client";
 import { cn } from "@/lib/utils";
-import { ToastErrorIcon, ToastSuccessIcon, ToastWarningIcon } from "@/public";
+
 import Image from "next/image";
 import { toast } from "sonner";
+import {
+  ToastErrorIcon,
+  ToastSuccessIcon,
+  ToastWarningIcon,
+} from "../../public";
 
 const useToast = () => {
   const showCustomToast = (
