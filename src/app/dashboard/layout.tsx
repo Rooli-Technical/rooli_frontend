@@ -19,7 +19,7 @@ export default function DashboardLayout({
   const showToast = useToast();
   const router = useProgressBarRouter();
   const [organizationModal, setOrganizationModal] = useState(false);
-  const [paymentModal, setPaymentModal] = useState(false);
+
   const { data: userProfile, isLoading } = useQuery({
     queryKey: ["user-profile"],
     queryFn: async () => {

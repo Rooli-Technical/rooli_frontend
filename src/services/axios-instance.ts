@@ -128,6 +128,9 @@ const handleAuthError = () => {
     "Handling authentication error - clearing tokens and redirecting"
   );
 
+  const path = window.location.pathname;
+  console.log("🚀 ~ file: axios-instance.ts:132 ~ path:", path);
+
   const { setAccessToken } = useAppStore.getState();
   setAccessToken(null);
 
@@ -140,8 +143,11 @@ const handleAuthError = () => {
   if (typeof window !== "undefined") {
     localStorage.removeItem("access_token");
 
+    if (path === "/" || path === "") {
+      return;
+    }
+
     setTimeout(() => {
-      console.log("Redirecting to login page");
       window.location.href = "/auth/login";
     }, 100);
   }
@@ -270,7 +276,6 @@ const axiosInstance = (withAuth: boolean = false) => {
         }
 
         if (error.response?.status === 403) {
-          console.log("403 error - access forbidden, logging out");
           handleAuthError();
         }
 
