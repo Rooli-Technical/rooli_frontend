@@ -21,11 +21,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import authService from "@/services/auth.service";
 import { useMutation } from "@tanstack/react-query";
 import useToast from "@/components/app-toast";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const formSchema = z.object({
   password: z.string().min(8, {
@@ -36,7 +36,7 @@ const formSchema = z.object({
   }),
 });
 
-export default function Page() {
+function Page() {
   const router = useRouter();
   const showToast = useToast();
   const form = useForm<z.infer<typeof formSchema>>({
@@ -47,6 +47,9 @@ export default function Page() {
     },
     mode: "onChange",
   });
+
+  const searchParams = useSearchParams();
+  const token = searchParams.get("token");
 
   const watchPassword = form.watch("password");
   const watchConfirmPassword = form.watch("confirmPassword");
@@ -71,7 +74,7 @@ export default function Page() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const payload = {
       password: values.password,
-      token: values.confirmPassword,
+      token: token ?? "",
     };
     await resetPassword(payload);
   }
@@ -188,5 +191,13 @@ export default function Page() {
         </Card>
       </div>
     </div>
+  );
+}
+
+export default function ChangePasswordPage() {
+  return (
+    <Suspense>
+      <Page />
+    </Suspense>
   );
 }
