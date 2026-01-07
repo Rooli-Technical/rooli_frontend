@@ -87,6 +87,7 @@ export default function SignupPage() {
       mutationKey: ["register-user"],
       mutationFn: async (payload: RegisterPayload) => {
         const response = await authService.registerUser(payload);
+        console.log("🚀 ~ file: page.tsx:90 ~ response:", response);
 
         return response?.data;
       },
@@ -106,7 +107,7 @@ export default function SignupPage() {
           "Registered successfully, please check your email for verification",
           "success"
         );
-        router.push("/auth/onboarding");
+        // router.push("/auth/onboarding");
       },
       onError: (error: any) => {
         const errorResponse =

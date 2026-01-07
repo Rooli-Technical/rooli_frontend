@@ -3,6 +3,8 @@ import type { Metadata } from "next";
 import { Open_Sans, Work_Sans } from "next/font/google";
 import "./globals.css";
 import { ReactQueryProvider } from "@/providers/react-query-provider";
+import { Toaster } from "@/components/ui/sonner";
+import NextTopLoader from "nextjs-toploader";
 
 const workSans = Work_Sans({
   subsets: ["latin"],
@@ -36,7 +38,11 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.svg" sizes="any" />
       </head>
       <body className="font-sans">
-        <ReactQueryProvider>{children}</ReactQueryProvider>
+        <ReactQueryProvider>
+          <NextTopLoader color="#1f2937" showSpinner={true} />
+          <Toaster position="top-right" />
+          {children}
+        </ReactQueryProvider>
       </body>
     </html>
   );

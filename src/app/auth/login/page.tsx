@@ -63,10 +63,20 @@ export default function LoginPage() {
     mutationFn: async (payload: LoginPayload) => {
       const response = await authService.loginUser(payload);
 
-      return response;
+      return response?.data;
     },
     onSuccess: (data) => {
-      console.log("🚀 ~ file: useAuthHook.tsx:14 ~ data:", data);
+      const { accessToken, refreshToken, user } = data;
+      setAccessToken(accessToken);
+      setRefreshToken(refreshToken);
+
+      if (user?.isEmailVerified) {
+        showToast("Please verify your email", "warning");
+        return;
+      }
+
+      setUser(user);
+
       showToast("Logged in successfully", "success");
     },
     onError: (error: any) => {

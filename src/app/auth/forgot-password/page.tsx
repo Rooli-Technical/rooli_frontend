@@ -25,6 +25,7 @@ import {
 import { Spinner } from "@/components/ui/spinner";
 import authService from "@/services/auth.service";
 import { useMutation } from "@tanstack/react-query";
+import useToast from "@/components/app-toast";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -33,6 +34,7 @@ const formSchema = z.object({
 });
 
 export default function ForgotPasswordPage() {
+  const showToast = useToast();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -49,10 +51,15 @@ export default function ForgotPasswordPage() {
       mutationFn: async (payload: { email: string }) => {
         const response = await authService.requestPasswordReset(payload);
 
-        return response;
+        return response?.data;
       },
-      onSuccess: (data) => {},
-      onError: (error: any) => {},
+      onSuccess: (data) => {
+        console.log("🚀 ~ file: page.tsx:56 ~ data:", data);
+        showToast("Password reset request sent successfully", "success");
+      },
+      onError: (error: any) => {
+        showToast(error?.response?.data?.message, "error");
+      },
     });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
