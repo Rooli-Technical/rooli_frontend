@@ -8,36 +8,114 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import workSpaceService from "@/services/workspace.service";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Check, Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { SocialAccountProps } from "@/types";
+import SocialsItem from "@/components/dashboard/socials-item";
+import useToast from "@/components/app-toast";
 
 export default function SocialAccountsPage() {
-  const [connectedAccounts] = useState([
-    {
-      platform: "Instagram",
-      username: "@techcorp",
-      connected: true,
-      followers: "12.4K",
+  const queryClient = useQueryClient();
+  const userProfile: any = queryClient.getQueryData(["user-profile"]);
+
+  const showToast = useToast();
+
+  const { isLoading, data: connectedSocials } = useQuery({
+    queryKey: ["workspaces", userProfile?.result?.lastActiveWorkspace],
+    queryFn: async () => {
+      const response = await workSpaceService.getWorkSpaceSocials(
+        userProfile?.result?.lastActiveWorkspace
+      );
+
+      return response?.data;
     },
-    {
-      platform: "Twitter",
-      username: "@techcorp",
-      connected: true,
-      followers: "8.7K",
-    },
-    {
-      platform: "Facebook",
-      username: "TechCorp Inc.",
-      connected: true,
-      followers: "15.2K",
-    },
-    {
-      platform: "LinkedIn",
-      username: "TechCorp Inc.",
-      connected: false,
-      followers: "0",
-    },
-  ]);
+    enabled: !!userProfile?.result?.lastActiveWorkspace,
+    retry: false,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+  });
+
+  const { mutate: connectSocialAccount, isPending: connectingAccount } =
+    useMutation({
+      mutationFn: async (payload: {
+        platform: string;
+        organizationId: string;
+      }) => {
+        const response = await workSpaceService.connectSocialAccount(payload);
+
+        return response?.data;
+      },
+      onSuccess: (data) => {
+        const { url } = data;
+        showToast(
+          "You will be redirected to connect your social account",
+          "success"
+        );
+        window.open(url, "_blank");
+        console.log("🚀 ~ file: page.tsx:46 ~ data:", data);
+      },
+      onError: (error: any) => {
+        const errorMsg =
+          error?.response?.data?.message || "Something went wrong";
+        showToast(errorMsg, "error");
+      },
+    });
+
+  const userSocials: SocialAccountProps[] = useMemo(() => {
+    if (!isLoading) {
+      if (!userProfile?.result?.lastActiveWorkspace) return [];
+
+      const allowedPlatforms: string[] =
+        userProfile?.result?.allowedPlatforms || [];
+
+      if (allowedPlatforms?.length === 0) return [];
+
+      const socials: SocialAccountProps[] = [];
+
+      allowedPlatforms.forEach((platform) => {
+        if (connectedSocials?.length === 0) {
+          socials.push({
+            platform,
+            connected: false,
+            username: "",
+            followers: "",
+            id: "",
+          });
+        }
+        // const social = data?.result?.socialProfiles?.find(
+        //   (social) => social.platform === platform
+        // );
+        // if (social) {
+        //   socials.push({
+        //     platform: social?.platform || "",
+        //     connected: true,
+        //     username: social?.username || "",
+        //     followers: social?.followers || "",
+        //     id: social?.id || "",
+        //   });
+        // }
+      });
+
+      return socials;
+    }
+
+    // const workspaceSocials = data?.result?.socialProfiles || [];
+
+    return [];
+  }, [userProfile, connectedSocials, isLoading]);
+
+  console.log("🚀 ~ file: page.tsx:45 ~ userSocials:", userSocials);
+
+  async function handleConnect(platform: string) {
+    connectSocialAccount({
+      platform,
+      organizationId: userProfile?.result?.organizationId,
+    });
+  }
+
   return (
     <div>
       <Card className="border-border">
@@ -50,57 +128,40 @@ export default function SocialAccountsPage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          {connectedAccounts.map((account) => {
-            const PlatformIcon =
-              {
-                Instagram: Instagram,
-                Twitter: Twitter,
-                Facebook: Facebook,
-                LinkedIn: Linkedin,
-              }[account.platform] || Instagram;
+          {isLoading && (
+            <div className="space-y-4">
+              <Skeleton className="h-20" />
+              <Skeleton className="h-20" />
+              <Skeleton className="h-20" />
+              <Skeleton className="h-20" />
+            </div>
+          )}
 
-            return (
-              <div
-                key={account.platform}
-                className="flex items-center justify-between p-4 border border-border rounded-lg"
-              >
-                <div className="flex items-center space-x-4">
-                  <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
-                    <PlatformIcon className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <h4 className="font-medium">{account.platform}</h4>
-                    <p className="text-sm text-muted-foreground">
-                      {account.connected ? account.username : "Not connected"}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center space-x-4">
-                  {account.connected && (
-                    <div className="text-right">
-                      <p className="text-sm font-medium">{account.followers}</p>
-                      <p className="text-xs text-muted-foreground">followers</p>
-                    </div>
-                  )}
-                  <div className="flex items-center space-x-2">
-                    {account.connected ? (
-                      <>
-                        <Badge className="bg-green-100 text-green-800">
-                          <Check className="mr-1 h-3 w-3" />
-                          Connected
-                        </Badge>
-                        <Button variant="outline" size="sm">
-                          Disconnect
-                        </Button>
-                      </>
-                    ) : (
-                      <Button size="sm">Connect</Button>
-                    )}
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+          {!isLoading && userSocials?.length === 0 && (
+            <div className="space-y-4 min-h-[250px] flex flex-col items-center justify-center">
+              <h2 className="text-xl font-bold text-center">
+                No social accounts connected
+              </h2>
+              <p className="text-muted-foreground text-center">
+                You are not permitted to connect social accounts, contact rooli
+                support.
+              </p>
+              <Button>Contact support</Button>
+            </div>
+          )}
+
+          {!isLoading && userSocials?.length !== 0 && (
+            <div className=" space-y-5">
+              {userSocials?.map((social, index) => (
+                <SocialsItem
+                  key={index}
+                  item={social}
+                  onConnect={() => handleConnect(social.platform)}
+                  isLoading={connectingAccount}
+                />
+              ))}
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

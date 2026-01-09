@@ -17,6 +17,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { Check } from "lucide-react";
 import React, { useMemo, useState } from "react";
 import { useAppStore } from "@/store/app-store";
+import authService from "@/services/auth.service";
 
 export default function Page() {
   const showToast = useToast();

@@ -37,7 +37,7 @@ class AuthService {
   }
 
   async logoutUser() {
-    const response = await axiosInstance(false).post("/auth/logout");
+    const response = await axiosInstance(true).post("/auth/logout");
 
     if (response.status === 200 || response.status === 201) {
       return response.data;

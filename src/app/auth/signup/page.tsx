@@ -58,7 +58,7 @@ const formSchema = z.object({
     message: "Confirm password must be at least 8 characters long",
   }),
   terms: z.boolean().refine((val) => val === true, {
-    message: "You must agree to the terms and privacy policy",
+    message: "You have not agreed to our terms and privacy policy",
   }),
 });
 
@@ -87,7 +87,6 @@ export default function SignupPage() {
       mutationKey: ["register-user"],
       mutationFn: async (payload: RegisterPayload) => {
         const response = await authService.registerUser(payload);
-        console.log("🚀 ~ file: page.tsx:90 ~ response:", response);
 
         return response?.data;
       },
@@ -355,33 +354,36 @@ export default function SignupPage() {
                   control={form.control}
                   name="terms"
                   render={({ field }) => (
-                    <FormItem className="flex flex-row items-center space-x-2 space-y-0">
-                      <FormControl>
-                        <Checkbox
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                          id="terms"
-                        />
-                      </FormControl>
-                      <FormLabel
-                        htmlFor="terms"
-                        className="text-sm text-muted-foreground flex-wrap font-normal"
-                      >
-                        I agree to the{" "}
-                        <Link
-                          href="/terms"
-                          className="text-primary hover:underline"
+                    <FormItem className=" space-y-0">
+                      <div className="flex flex-row items-center space-x-2">
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                            id="terms"
+                            className="bg-white"
+                          />
+                        </FormControl>
+                        <FormLabel
+                          htmlFor="terms"
+                          className="text-sm text-muted-foreground flex-wrap font-normal"
                         >
-                          Terms of Service
-                        </Link>{" "}
-                        and{" "}
-                        <Link
-                          href="/privacy"
-                          className="text-primary hover:underline"
-                        >
-                          Privacy Policy
-                        </Link>
-                      </FormLabel>
+                          I agree to the{" "}
+                          <Link
+                            href="/terms"
+                            className="text-primary hover:underline"
+                          >
+                            Terms of Service
+                          </Link>{" "}
+                          and{" "}
+                          <Link
+                            href="/privacy"
+                            className="text-primary hover:underline"
+                          >
+                            Privacy Policy
+                          </Link>
+                        </FormLabel>
+                      </div>
                       <FormMessage />
                     </FormItem>
                   )}

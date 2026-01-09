@@ -33,6 +33,9 @@ export default function OnboardingPage() {
   const totalSteps = 3;
   const progress = (step / totalSteps) * 100;
 
+  const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  console.log("🚀 ~ file: page.tsx:37 ~ userTimezone:", userTimezone);
+
   //QUERIES
   const { isLoading, data: planList } = useQuery({
     queryKey: ["billing-plans"],
@@ -158,6 +161,7 @@ export default function OnboardingPage() {
                 onSelect={(plan) => updateFormData("pricingPlan", plan)}
                 plans={planList ?? []}
                 accountType={formData.accountType}
+                timezone={userTimezone}
               />
             </div>
           )}

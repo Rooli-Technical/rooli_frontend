@@ -10,6 +10,7 @@ import PageLoader from "@/components/page-loader";
 import { useRouter } from "next/navigation";
 import { useProgressBarRouter } from "@/hooks/use-progress-bar-router";
 import useToast from "@/components/app-toast";
+import LogoutModal from "@/components/modals/logout-modal";
 
 export default function DashboardLayout({
   children,
@@ -19,6 +20,7 @@ export default function DashboardLayout({
   const showToast = useToast();
   const router = useProgressBarRouter();
   const [organizationModal, setOrganizationModal] = useState(false);
+  const [logoutModal, setLogoutModal] = useState(false);
 
   const { data: userProfile, isLoading } = useQuery({
     queryKey: ["user-profile"],
@@ -61,7 +63,7 @@ export default function DashboardLayout({
         toggleOrganizationModal={() => setOrganizationModal(!organizationModal)}
       />
       <div className="flex-1 flex flex-col overflow-hidden">
-        <Header />
+        <Header toggleLogoutModal={() => setLogoutModal(!logoutModal)} />
         <main className="flex-1 overflow-y-auto bg-muted/30 p-6">
           {children}
         </main>
@@ -71,6 +73,8 @@ export default function DashboardLayout({
         open={organizationModal}
         setOpen={setOrganizationModal}
       />
+
+      <LogoutModal open={logoutModal} setOpen={setLogoutModal} />
     </div>
   );
 }
