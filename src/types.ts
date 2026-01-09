@@ -31,3 +31,11 @@ export type CompleteOnboardingPayload = {
   userType: string;
   initialWorkspaceName?: string;
 };
+
+export type SocialAccountProps = {
+  platform: string;
+  connected: boolean;
+  username: string;
+  followers: string;
+  id: string;
+};

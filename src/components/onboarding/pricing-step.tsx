@@ -12,7 +12,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { addCommas, formatMoney } from "@/lib/utils";
+import { addCommas, cn, formatMoney } from "@/lib/utils";
 
 export type PlanFeatures = {
   analytics?: boolean;
@@ -44,81 +44,27 @@ interface PricingStepProps {
     monthlyAiCredits: number;
   }[];
   accountType: string | null;
+  timezone: string;
 }
-
-//   {
-//     id: "basic",
-//     name: "Basic",
-//     price: "$29",
-//     description: "Essential features for individuals",
-//     features: [
-//       "1 User",
-//       "5 Connected Accounts",
-//       "Basic Analytics",
-//       "Email Support",
-//     ],
-//   },
-//   {
-//     id: "gold",
-//     name: "Gold",
-//     price: "$79",
-//     description: "Perfect for growing teams",
-//     features: [
-//       "5 Users",
-//       "20 Connected Accounts",
-//       "Advanced Analytics",
-//       "Priority Support",
-//       "Content Library",
-//     ],
-//     popular: true,
-//   },
-//   {
-//     id: "diamond",
-//     name: "Diamond",
-//     price: "$199",
-//     description: "For agencies and large scale",
-//     features: [
-//       "Unlimited Users",
-//       "Unlimited Accounts",
-//       "White Label",
-//       "24/7 Phone Support",
-//       "API Access",
-//     ],
-//   },
-// ];
 
 export function PricingStep({
   selectedPlan,
   onSelect,
   plans,
   accountType,
+  timezone = "Africa/Lagos",
 }: PricingStepProps) {
-  console.log("🚀 ~ file: pricing-step.tsx:95 ~ accountType:", accountType);
   const [billingCycle, setBillingCycle] = useState<"MONTHLY" | "YEARLY">(
     "MONTHLY"
   );
 
   const filteredPlans = plans.filter((plan) => {
-    // Filter by account type first
     if (!accountType || !plan.tier) return plan.interval === billingCycle;
-
-    if (accountType === "INDIVIDUAL") {
-      const isValidTier = plan.tier === "CREATOR" || plan.tier === "BUSINESS";
-      return isValidTier && plan.interval === billingCycle;
-    }
-
-    if (accountType === "AGENCY") {
-      const isValidTier = plan.tier === "ROCKET" || plan.tier === "ENTERPRISE";
-      // Enterprise plans show for both monthly and yearly
-      if (plan.tier === "ENTERPRISE") {
-        return isValidTier;
-      }
-      // Other plans still filter by billing cycle
-      return isValidTier && plan.interval === billingCycle;
-    }
 
     return plan.interval === billingCycle;
   });
+
+  console.log("🚀 ~ file: pricing-step.tsx:62 ~ filteredPlans:", filteredPlans);
 
   return (
     <div className="space-y-6">
@@ -137,12 +83,19 @@ export function PricingStep({
         >
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="MONTHLY">Monthly</TabsTrigger>
-            <TabsTrigger value="YEARLY">Yearly</TabsTrigger>
+            <TabsTrigger value="YEARLY" className="flex items-center gap-1.5">
+              Yearly
+              <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">
+                Save 5%
+              </span>
+            </TabsTrigger>
           </TabsList>
         </Tabs>
       </div>
 
-      <div className="flex flex-col md:flex-row flex-wrap md:justify-center gap-6">
+      <div
+        className={cn(`grid gap-5 grid-cols-1 md:grid-cols-2  justify-center`)}
+      >
         {filteredPlans.map((plan) => (
           <Card
             key={plan.id}
@@ -159,9 +112,9 @@ export function PricingStep({
             </CardHeader>
             <CardContent className="space-y-4 flex-1 flex flex-col">
               <div className="text-3xl font-bold">
-                {/* <span className="text-base font-semibold text-primary">
-                  {plan.currency}
-                </span> */}
+                <span className="text-base font-semibold text-primary">
+                  {timezone === "Africa/Lagos" ? "₦" : "$"}
+                </span>
                 {formatMoney(plan.price)}
                 <span className="text-sm font-normal text-muted-foreground">
                   /{billingCycle === "MONTHLY" ? "mo" : "yr"}
@@ -214,6 +167,70 @@ export function PricingStep({
             </CardContent>
           </Card>
         ))}
+
+        {billingCycle === "YEARLY" && (
+          <Card
+            className={`relative cursor-pointer transition-all hover:border-primary border-2 flex flex-col border-border`}
+          >
+            <CardHeader>
+              <CardTitle className="font-serif text-xl">Enterprise</CardTitle>
+              <CardDescription>
+                For large organizations with custom needs
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4 flex-1 flex flex-col">
+              <div className="space-y-1">
+                <p className="text-sm font-medium text-muted-foreground">
+                  Starts at
+                </p>
+                <div className="text-3xl font-bold">
+                  <span className="text-base font-semibold text-primary">
+                    {timezone === "Africa/Lagos" ? "₦" : "$"}
+                  </span>
+                  {timezone === "Africa/Lagos" ? "250,000" : "2,000"}
+                  <span className="text-sm font-normal text-muted-foreground">
+                    /yr
+                  </span>
+                </div>
+              </div>
+              <ul className="space-y-2 flex-1">
+                <li className="flex items-center text-sm">
+                  <Check className="h-4 w-4 mr-2 text-primary" />
+                  Unlimited Workspaces
+                </li>
+                <li className="flex items-center text-sm">
+                  <Check className="h-4 w-4 mr-2 text-primary" />
+                  Unlimited Social Profiles
+                </li>
+                <li className="flex items-center text-sm">
+                  <Check className="h-4 w-4 mr-2 text-primary" />
+                  Unlimited Team Members
+                </li>
+                <li className="flex items-center text-sm">
+                  <Check className="h-4 w-4 mr-2 text-primary" />
+                  Custom AI Credits
+                </li>
+                <li className="flex items-center text-sm">
+                  <Check className="h-4 w-4 mr-2 text-primary" />
+                  Priority Support
+                </li>
+                <li className="flex items-center text-sm">
+                  <Check className="h-4 w-4 mr-2 text-primary" />
+                  White-labeling
+                </li>
+              </ul>
+              <Button
+                variant="outline"
+                className="w-full mt-4"
+                onClick={() => {
+                  window.open("mailto:support@rooli.com", "_blank");
+                }}
+              >
+                Talk to Sales
+              </Button>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </div>
   );

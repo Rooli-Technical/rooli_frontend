@@ -18,6 +18,7 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
+import { useQueryClient } from "@tanstack/react-query";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: Home },
@@ -45,6 +46,12 @@ export function Sidebar({
   toggleOrganizationModal: () => void;
 }) {
   const pathname = usePathname();
+
+  const queryClient = useQueryClient();
+  const userProfile: any = queryClient.getQueryData(["user-profile"]);
+
+  const userType = userProfile?.result?.UserType;
+  console.log("🚀 ~ file: sidebar.tsx:52 ~ userProfile:", userProfile);
 
   return (
     <div className="w-64 bg-sidebar border-r border-sidebar-border flex flex-col">

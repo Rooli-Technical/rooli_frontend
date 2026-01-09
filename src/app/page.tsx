@@ -64,12 +64,22 @@ export default function RooliLandingPage() {
               >
                 Integrations
               </a>
-              <Button variant="outline" size="sm" asChild>
-                <Link href="/auth/login">Sign In</Link>
-              </Button>
-              <Button size="sm" asChild>
-                <Link href="/auth/signup">Start Free Trial</Link>
-              </Button>
+              {!isLoading && userProfile ? (
+                <>
+                  <Button size="sm" asChild>
+                    <Link href="/dashboard ">Go to dashboard</Link>
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button variant="outline" size="sm" asChild>
+                    <Link href="/auth/login">Sign In</Link>
+                  </Button>
+                  <Button size="sm" asChild>
+                    <Link href="/auth/signup">Sign up</Link>
+                  </Button>
+                </>
+              )}
             </nav>
           </div>
         </div>
@@ -100,16 +110,33 @@ export default function RooliLandingPage() {
               drive real results.
             </p>
             <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-8">
-              <Button
-                size="lg"
-                className="text-lg px-10 py-4 h-auto shadow-lg hover:shadow-xl transition-all duration-300"
-                asChild
-              >
-                <Link href="/auth/signup">
-                  Start Free Trial
-                  <ArrowRight className="ml-3 h-5 w-5" />
-                </Link>
-              </Button>
+              {!isLoading && userProfile ? (
+                <>
+                  <Button
+                    size="lg"
+                    className="text-lg px-10 py-4 h-auto shadow-lg hover:shadow-xl transition-all duration-300"
+                    asChild
+                  >
+                    <Link href="/dashboard">
+                      Go to dashboard
+                      <ArrowRight className="ml-3 h-5 w-5" />
+                    </Link>
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button
+                    size="lg"
+                    className="text-lg px-10 py-4 h-auto shadow-lg hover:shadow-xl transition-all duration-300"
+                    asChild
+                  >
+                    <Link href="/auth/signup">
+                      Sign up
+                      <ArrowRight className="ml-3 h-5 w-5" />
+                    </Link>
+                  </Button>
+                </>
+              )}
               <Button
                 variant="outline"
                 size="lg"

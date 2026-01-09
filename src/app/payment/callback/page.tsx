@@ -5,8 +5,9 @@ import PageLoader from "@/components/page-loader";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { useProgressBarRouter } from "@/hooks/use-progress-bar-router";
+import authService from "@/services/auth.service";
 import billingService from "@/services/billing.service";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { CloseCircle, InfoCircle, TickCircle } from "iconsax-reactjs";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
@@ -20,6 +21,19 @@ function Page() {
   const [paymentState, setPaymentState] = useState<
     "LOADING" | "SUCCESS" | "ERROR"
   >("LOADING");
+
+  const { refetch } = useQuery({
+    queryKey: ["user-profile"],
+    queryFn: async () => {
+      const response = await authService.getUserProfile();
+
+      return response.data;
+    },
+    retry: false,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+  });
+
   const { isPending, mutateAsync } = useMutation({
     mutationKey: ["verify-payment"],
     mutationFn: async () => {
@@ -28,6 +42,7 @@ function Page() {
       });
     },
     onSuccess: () => {
+      refetch();
       setPaymentState("SUCCESS");
     },
     onError: (error: any) => {
