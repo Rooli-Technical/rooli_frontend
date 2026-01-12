@@ -34,8 +34,6 @@ export default function DashboardLayout({
     refetchOnWindowFocus: false,
   });
 
-  console.log("🚀 ~ file: layout.tsx:20 ~ userProfile:", userProfile);
-
   useEffect(() => {
     if (!isLoading && userProfile) {
       if (!userProfile?.result?.isOnboardingComplete) {
@@ -63,7 +61,10 @@ export default function DashboardLayout({
         toggleOrganizationModal={() => setOrganizationModal(!organizationModal)}
       />
       <div className="flex-1 flex flex-col overflow-hidden">
-        <Header toggleLogoutModal={() => setLogoutModal(!logoutModal)} />
+        <Header
+          toggleLogoutModal={() => setLogoutModal(!logoutModal)}
+          userData={userProfile}
+        />
         <main className="flex-1 overflow-y-auto bg-muted/30 p-6">
           {children}
         </main>

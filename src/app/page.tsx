@@ -96,7 +96,7 @@ export default function RooliLandingPage() {
               className="mb-8 px-4 py-2 text-sm font-medium"
             >
               <Zap className="w-4 h-4 mr-2" />
-              AI-Powered Social Media Management
+              AI-Powered Social Media Management Dev
             </Badge>
             <h1 className="font-serif font-bold text-5xl sm:text-6xl lg:text-7xl text-foreground mb-8 leading-tight tracking-tight">
               Schedule Smarter, <br />
