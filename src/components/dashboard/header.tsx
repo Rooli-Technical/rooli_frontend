@@ -14,8 +14,10 @@ import { Bell, Search, Plus, User, Settings, LogOut } from "lucide-react";
 
 export function Header({
   toggleLogoutModal,
+  userData,
 }: {
   toggleLogoutModal: () => void;
+  userData: any;
 }) {
   return (
     <header className="h-16 border-b border-border bg-background px-6 flex items-center justify-between">
@@ -85,17 +87,27 @@ export function Header({
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="relative h-8 w-8 rounded-full">
               <Avatar className="h-8 w-8">
-                <AvatarImage src="/diverse-user-avatars.png" alt="User" />
-                <AvatarFallback>JD</AvatarFallback>
+                <AvatarImage
+                  src={userData?.result?.profilePicture ?? ""}
+                  alt="User"
+                />
+                <AvatarFallback>
+                  {userData?.result?.firstName[0] +
+                    userData?.result?.lastName[0]}
+                </AvatarFallback>
               </Avatar>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56" align="end" forceMount>
             <DropdownMenuLabel className="font-normal">
               <div className="flex flex-col space-y-1">
-                <p className="text-sm font-medium leading-none">John Doe</p>
+                <p className="text-sm font-medium leading-none">
+                  {userData?.result?.firstName +
+                    " " +
+                    userData?.result?.lastName}
+                </p>
                 <p className="text-xs leading-none text-muted-foreground">
-                  john@company.com
+                  {userData?.result?.email}
                 </p>
               </div>
             </DropdownMenuLabel>
