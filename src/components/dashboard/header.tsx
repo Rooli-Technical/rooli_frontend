@@ -10,7 +10,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Bell, Search, Plus, User, Settings, LogOut } from "lucide-react";
+import { Bell, Search, Plus, User, Settings, LogOut, Menu } from "lucide-react";
+import { useSidebar } from "../ui/sidebar";
 
 export function Header({
   toggleLogoutModal,
@@ -19,10 +20,14 @@ export function Header({
   toggleLogoutModal: () => void;
   userData: any;
 }) {
+  const { toggleSidebar } = useSidebar();
   return (
     <header className="h-16 border-b border-border bg-background px-6 flex items-center justify-between">
+      <button onClick={toggleSidebar} className="block md:hidden">
+        <Menu />
+      </button>
       {/* Search */}
-      <div className="flex-1 max-w-md">
+      {/* <div className="flex-1 max-w-md">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
           <Input
@@ -30,10 +35,10 @@ export function Header({
             className="pl-10 bg-muted/50 border-border"
           />
         </div>
-      </div>
+      </div> */}
 
       {/* Actions */}
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center space-x-4 ml-auto">
         {/* Create Button */}
         <Button className="bg-primary hover:bg-primary/90">
           <Plus className="mr-2 h-4 w-4" />
