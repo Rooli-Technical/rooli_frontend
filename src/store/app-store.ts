@@ -53,9 +53,6 @@ export const useAppStore = create<AuthStoreProps>()(
       }),
       {
         name: "rooli-store",
-        partialize: (state) => ({
-          accessToken: state.accessToken,
-        }),
         onRehydrateStorage: () => (state) => {
           if (state) state.setHasHydrated(true);
         },
