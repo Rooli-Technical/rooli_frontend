@@ -12,6 +12,20 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Bell, Search, Plus, User, Settings, LogOut, Menu } from "lucide-react";
 import { useSidebar } from "../ui/sidebar";
+import { usePathname } from "next/navigation";
+import { useMemo } from "react";
+import { useProgressBarRouter } from "@/hooks/use-progress-bar-router";
+
+const Title: Record<string, string> = {
+  analytics: "Analytics",
+  "": "Dashboard",
+  scheduler: "Content Scheduler",
+  content: "Content Library",
+  "social-accounts": "Social Accounts",
+  "ai-assistant": "AI Assistant",
+  team: "Team",
+  "/dashboard/inbox": "Inbox",
+};
 
 export function Header({
   toggleLogoutModal,
@@ -20,29 +34,52 @@ export function Header({
   toggleLogoutModal: () => void;
   userData: any;
 }) {
+  const pathname = usePathname();
+  const router = useProgressBarRouter();
+
   const { toggleSidebar } = useSidebar();
+
+  const currentPath = pathname.split("/")[2];
+  const notificationCount = 0;
+
+  const header:
+    | "Analytics"
+    | "Dashboard"
+    | "Content Scheduler"
+    | "Content Library"
+    | "Social Accounts"
+    | "AI Assistant"
+    | "Team"
+    | "Inbox" = useMemo(() => {
+    if (!currentPath) return "Dashboard";
+    if (currentPath.includes("analytics")) return "Analytics";
+    if (currentPath.includes("scheduler")) return "Content Scheduler";
+    if (currentPath.includes("content")) return "Content Library";
+    if (currentPath.includes("social-accounts")) return "Social Accounts";
+    if (currentPath.includes("ai-assistant")) return "AI Assistant";
+    if (currentPath.includes("team")) return "Team";
+    if (currentPath.includes("inbox")) return "Inbox";
+    return "Dashboard";
+  }, [pathname.split("/")[2]]);
+
   return (
     <header className="h-16 border-b border-border bg-background px-6 flex items-center justify-between">
       <button onClick={toggleSidebar} className="block md:hidden">
         <Menu />
       </button>
-      {/* Search */}
-      {/* <div className="flex-1 max-w-md">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-          <Input
-            placeholder="Search posts, campaigns, analytics..."
-            className="pl-10 bg-muted/50 border-border"
-          />
-        </div>
-      </div> */}
+      <h2 className="text-lg font-semibold hidden md:block md:ml-0">
+        {header}
+      </h2>
 
       {/* Actions */}
       <div className="flex items-center space-x-4 ml-auto">
         {/* Create Button */}
-        <Button className="bg-primary hover:bg-primary/90">
-          <Plus className="mr-2 h-4 w-4" />
-          Create Post
+        <Button
+          className="bg-primary hover:bg-primary/90 flex items-center justify-center"
+          onClick={() => router.push("/dashboard/content/create-post")}
+        >
+          <Plus className="md:mr-2 md:h-4 md:w-4" />
+          <p className="hidden md:block">Create Post</p>
         </Button>
 
         {/* Notifications */}
@@ -50,9 +87,11 @@ export function Header({
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="relative">
               <Bell className="h-4 w-4" />
-              <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs">
-                3
-              </Badge>
+              {notificationCount > 0 && (
+                <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs">
+                  {notificationCount}
+                </Badge>
+              )}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-80">

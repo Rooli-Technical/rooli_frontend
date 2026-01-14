@@ -21,117 +21,74 @@ import {
   Share,
 } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
+import PageHeader from "@/components/page-header";
+import { addCommas } from "@/lib/utils";
 
 export default function DashboardPage() {
   const queryClient = useQueryClient();
   const userProfile: any = queryClient.getQueryData(["user-profile"]);
-  console.log("🚀 ~ file: page.tsx:21 ~ userProfile:", userProfile);
+
+  const widgets = [
+    {
+      title: "Total Followers",
+      value: 0,
+      icon: Users,
+      color: "primary",
+      unit: "",
+    },
+    {
+      title: "Engagement Rate",
+      value: 0,
+      icon: Heart,
+      color: "secondary",
+      unit: "%",
+    },
+    {
+      title: "Posts This Month",
+      value: 0,
+      icon: Calendar,
+      color: "accent",
+      unit: "",
+    },
+  ];
 
   return (
     <div className="space-y-6">
       {/* Welcome Section */}
       <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="font-serif text-2xl md:text-3xl xl:text-4xl font-bold text-foreground mb-2">
-            Welcome back, {userProfile?.result?.firstName}!
-          </h1>
-          <p className="text-sm lg:text-lg text-muted-foreground">
-            Here's what's happening with your social media today.
-          </p>
-        </div>
-        {/* <Button className="bg-primary hover:bg-primary/90 px-6 py-3 h-auto shadow-lg hover:shadow-xl transition-all duration-300">
-          <Plus className="mr-2 h-5 w-5" />
-          Create Post
-        </Button> */}
+        <PageHeader
+          title={`Welcome back, ${userProfile?.result?.firstName}!`}
+          description="Here's what's happening with your social media today."
+        />
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <Card className="border-border hover:shadow-lg transition-all duration-300 group">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Total Followers
-            </CardTitle>
-            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-              <Users className="h-5 w-5 text-primary" />
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-foreground mb-2">
-              24,567
-            </div>
-            <div className="flex items-center text-sm">
-              <ArrowUpRight className="mr-1 h-4 w-4 text-green-500" />
-              <span className="text-green-500 font-medium">+12.5%</span>
-              <span className="ml-1 text-muted-foreground">
-                from last month
-              </span>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-border hover:shadow-lg transition-all duration-300 group">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Engagement Rate
-            </CardTitle>
-            <div className="w-10 h-10 rounded-lg bg-secondary/10 flex items-center justify-center group-hover:bg-secondary/20 transition-colors">
-              <Heart className="h-5 w-5 text-secondary" />
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-foreground mb-2">4.8%</div>
-            <div className="flex items-center text-sm">
-              <ArrowUpRight className="mr-1 h-4 w-4 text-green-500" />
-              <span className="text-green-500 font-medium">+0.3%</span>
-              <span className="ml-1 text-muted-foreground">from last week</span>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-border hover:shadow-lg transition-all duration-300 group">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Posts This Month
-            </CardTitle>
-            <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center group-hover:bg-accent/20 transition-colors">
-              <Calendar className="h-5 w-5 text-accent" />
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-foreground mb-2">47</div>
-            <div className="flex items-center text-sm">
-              <ArrowDownRight className="mr-1 h-4 w-4 text-red-500" />
-              <span className="text-red-500 font-medium">-8.2%</span>
-              <span className="ml-1 text-muted-foreground">
-                from last month
-              </span>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-border hover:shadow-lg transition-all duration-300 group">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Reach
-            </CardTitle>
-            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-              <TrendingUp className="h-5 w-5 text-primary" />
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-foreground mb-2">
-              156.2K
-            </div>
-            <div className="flex items-center text-sm">
-              <ArrowUpRight className="mr-1 h-4 w-4 text-green-500" />
-              <span className="text-green-500 font-medium">+18.7%</span>
-              <span className="ml-1 text-muted-foreground">
-                from last month
-              </span>
-            </div>
-          </CardContent>
-        </Card>
+      <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-5">
+        {widgets.map((widget) => (
+          <Card className="border-border hover:shadow-lg transition-all duration-300 group">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                {widget.title}
+              </CardTitle>
+              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                <widget.icon className="h-5 w-5 text-primary" />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-foreground mb-2">
+                {addCommas(widget.value)}
+                {widget.unit}
+              </div>
+              <div className="flex items-center text-sm">
+                <ArrowUpRight className="mr-1 h-4 w-4 text-green-500" />
+                <span className="text-green-500 font-medium">+12.5%</span>
+                <span className="ml-1 text-muted-foreground">
+                  from last month
+                </span>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
