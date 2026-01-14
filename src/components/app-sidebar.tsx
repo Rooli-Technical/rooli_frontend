@@ -28,6 +28,7 @@ import {
 import Image from "next/image";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
+import { useMemo } from "react";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: Home },
@@ -59,7 +60,9 @@ export default function AppSidebar({
   const queryClient = useQueryClient();
   const userProfile: any = queryClient.getQueryData(["user-profile"]);
 
-  const userType = userProfile?.result?.UserType;
+  const userOrganization = userProfile?.result?.organization;
+  const userPlan = userProfile?.result?.plan;
+
   return (
     <Sidebar>
       <SidebarHeader>
@@ -72,12 +75,16 @@ export default function AppSidebar({
 
           <div
             className="w-full bg-primary p-2 rounded-md cursor-pointer hover:bg-primary/90 flex items-center justify-between"
-            onClick={toggleOrganizationModal}
+            onClick={() => {
+              if (userPlan?.maxWorkspaces > 1) {
+                toggleOrganizationModal();
+              }
+            }}
           >
             <div>
               <p className="text-white text-xs font-semibold">Organization</p>
               <h2 className="text-white text-sm font-semibold">
-                Organization Name
+                {userOrganization?.name ?? "My Organization"}
               </h2>
             </div>
             <ChevronsUpDown color="#fff" size={16} />
@@ -87,7 +94,10 @@ export default function AppSidebar({
       <SidebarContent className="pb-5 px-5">
         <SidebarMenu className="space-y-2">
           {navigation.map((item) => {
-            const isActive = pathname.includes(item.href);
+            const isActive =
+              item.href === "/dashboard"
+                ? pathname === item.href
+                : pathname.startsWith(item.href);
             return (
               <SidebarMenuItem key={item.name}>
                 <SidebarMenuButton
@@ -114,7 +124,7 @@ export default function AppSidebar({
       <SidebarFooter>
         <div className="p-4 border-t border-sidebar-border space-y-2">
           {bottomNavigation.map((item) => {
-            const isActive = pathname === item.href;
+            const isActive = pathname.startsWith(item.href);
             return (
               <Link key={item.name} href={item.href}>
                 <Button
