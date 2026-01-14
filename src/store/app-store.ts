@@ -16,6 +16,11 @@ type AuthStoreProps = {
   reference: string | null;
   setReference: (value: string | null) => void;
   clearAuth: () => void;
+
+  platform: "TWITTER" | "INSTAGRAM" | "FACEBOOK" | "LINKEDIN" | null;
+  setPlatform: (
+    value: "TWITTER" | "INSTAGRAM" | "FACEBOOK" | "LINKEDIN" | null
+  ) => void;
 };
 
 export const useAppStore = create<AuthStoreProps>()(
@@ -34,6 +39,8 @@ export const useAppStore = create<AuthStoreProps>()(
         setOrganizationId: (value) => set({ organizationId: value }),
         reference: null,
         setReference: (value) => set({ reference: value }),
+        platform: null,
+        setPlatform: (value) => set({ platform: value }),
         clearAuth: () =>
           set({
             accessToken: null,
@@ -41,6 +48,7 @@ export const useAppStore = create<AuthStoreProps>()(
             user: null,
             organizationId: null,
             reference: null,
+            platform: null,
           }),
       }),
       {

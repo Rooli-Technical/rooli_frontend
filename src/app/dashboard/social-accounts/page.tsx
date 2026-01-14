@@ -16,12 +16,14 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { SocialAccountProps } from "@/types";
 import SocialsItem from "@/components/dashboard/socials-item";
 import useToast from "@/components/app-toast";
+import { useAppStore } from "@/store/app-store";
 
 export default function SocialAccountsPage() {
   const queryClient = useQueryClient();
   const userProfile: any = queryClient.getQueryData(["user-profile"]);
 
   const showToast = useToast();
+  const { setPlatform } = useAppStore();
 
   const { isLoading, data: connectedSocials } = useQuery({
     queryKey: ["workspaces", userProfile?.result?.lastActiveWorkspace],
@@ -41,9 +43,10 @@ export default function SocialAccountsPage() {
   const { mutate: connectSocialAccount, isPending: connectingAccount } =
     useMutation({
       mutationFn: async (payload: {
-        platform: string;
+        platform: "TWITTER" | "INSTAGRAM" | "FACEBOOK" | "LINKEDIN";
         organizationId: string;
       }) => {
+        setPlatform(payload.platform);
         const response = await workSpaceService.connectSocialAccount(payload);
 
         return response?.data;
@@ -55,12 +58,12 @@ export default function SocialAccountsPage() {
           "success"
         );
         window.open(url, "_blank");
-        console.log("🚀 ~ file: page.tsx:46 ~ data:", data);
       },
       onError: (error: any) => {
         const errorMsg =
           error?.response?.data?.message || "Something went wrong";
         showToast(errorMsg, "error");
+        setPlatform(null);
       },
     });
 
@@ -111,7 +114,7 @@ export default function SocialAccountsPage() {
 
   async function handleConnect(platform: string) {
     connectSocialAccount({
-      platform,
+      platform: platform as "TWITTER" | "INSTAGRAM" | "FACEBOOK" | "LINKEDIN",
       organizationId: userProfile?.result?.organizationId,
     });
   }
