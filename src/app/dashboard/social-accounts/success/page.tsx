@@ -61,12 +61,12 @@ function Page() {
         queryKey: ["workspaces", userProfile?.result?.lastActiveWorkspace],
       });
 
-      router.push("/dashboard/social-accounts");
+      // router.push("/dashboard/social-accounts");
       // setPlatform(null);
     },
     onError: () => {
       setStatus("ERROR");
-      // setPlatform(null);
+      setPlatform(null);
     },
   });
 
