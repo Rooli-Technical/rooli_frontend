@@ -62,11 +62,11 @@ function Page() {
       });
 
       router.push("/dashboard/social-accounts");
-      setPlatform(null);
+      // setPlatform(null);
     },
     onError: () => {
       setStatus("ERROR");
-      setPlatform(null);
+      // setPlatform(null);
     },
   });
 
@@ -116,7 +116,7 @@ function Page() {
 export default function SuccessPage() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <Page />;
+      <Page />
     </Suspense>
   );
 }

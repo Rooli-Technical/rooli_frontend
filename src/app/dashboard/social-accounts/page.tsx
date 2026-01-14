@@ -110,8 +110,6 @@ export default function SocialAccountsPage() {
     return [];
   }, [userProfile, connectedSocials, isLoading]);
 
-  console.log("🚀 ~ file: page.tsx:45 ~ userSocials:", userSocials);
-
   async function handleConnect(platform: string) {
     connectSocialAccount({
       platform: platform as "TWITTER" | "INSTAGRAM" | "FACEBOOK" | "LINKEDIN",
