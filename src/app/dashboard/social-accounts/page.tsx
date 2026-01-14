@@ -115,7 +115,7 @@ export default function SocialAccountsPage() {
   async function handleConnect(platform: string) {
     connectSocialAccount({
       platform: platform as "TWITTER" | "INSTAGRAM" | "FACEBOOK" | "LINKEDIN",
-      organizationId: userProfile?.result?.organizationId,
+      organizationId: userProfile?.result?.organization?.id,
     });
   }
 
