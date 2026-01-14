@@ -87,7 +87,7 @@ export default function AppSidebar({
       <SidebarContent className="pb-5 px-5">
         <SidebarMenu className="space-y-2">
           {navigation.map((item) => {
-            const isActive = pathname === item.href;
+            const isActive = pathname.includes(item.href);
             return (
               <SidebarMenuItem key={item.name}>
                 <SidebarMenuButton

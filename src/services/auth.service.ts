@@ -5,6 +5,10 @@ import {
 } from "@/types";
 import axiosInstance from "./axios-instance";
 
+const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+const GOOGLE_ID = process.env.NEXT_PUBLIC_ROOLI_GOOGLE_ID;
+const GOOGLE_CALLBACK_URL = process.env.NEXT_PUBLIC_GOOGLE_CALLBACK_URL;
+
 class AuthService {
   async registerUser(payload: RegisterPayload) {
     const response = await axiosInstance(false).post("/auth/register", payload);
@@ -27,13 +31,20 @@ class AuthService {
   }
 
   async googleAuthUser() {
-    const response = await axiosInstance(false).get("/auth/google");
+    const rootUrl = "https://accounts.google.com/o/oauth2/v2/auth";
 
-    if (response.status === 200 || response.status === 201) {
-      return response.data;
-    }
+    const options = {
+      client_id: GOOGLE_ID || "",
+      redirect_uri: GOOGLE_CALLBACK_URL || "",
+      response_type: "code",
+      scope: "openid email profile",
+      access_type: "offline",
+      prompt: "consent",
+    };
 
-    throw new Error(response.data.message);
+    const qs = new URLSearchParams(options);
+
+    window.location.href = `${rootUrl}?${qs.toString()}`;
   }
 
   async logoutUser() {
