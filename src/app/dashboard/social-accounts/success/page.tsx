@@ -56,12 +56,12 @@ function Page() {
     }) => {
       const response: any = await workSpaceService.connectedSocialsVerification(
         {
-          // platform: data.platform as
-          //   | "TWITTER"
-          //   | "INSTAGRAM"
-          //   | "FACEBOOK"
-          //   | "LINKEDIN",
-          platform: "INSTAGRAM",
+          platform: data.platform as
+            | "TWITTER"
+            | "INSTAGRAM"
+            | "FACEBOOK"
+            | "LINKEDIN",
+          // platform: "INSTAGRAM",
           data: {
             code: data.code,
             state: data.state,
@@ -71,7 +71,7 @@ function Page() {
         }
       );
 
-      return response;
+      return response?.data;
     },
     onSuccess: (socialData: any) => {
       console.log("🚀 ~ file: page.tsx:74 ~ socialData:", socialData);
