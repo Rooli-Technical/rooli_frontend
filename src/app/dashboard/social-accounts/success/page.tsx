@@ -12,9 +12,10 @@ function Page() {
   const router = useProgressBarRouter();
   const queryClient = useQueryClient();
   const userProfile: any = queryClient.getQueryData(["user-profile"]);
-  const searchParams = useSearchParams();
+
   const { platform, setPlatform } = useAppStore();
 
+  const searchParams = useSearchParams();
   const code = searchParams.get("code");
   const state = searchParams.get("state");
 
@@ -51,7 +52,8 @@ function Page() {
 
       return response;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      console.log("🚀 ~ file: page.tsx:58 ~ data:", data);
       setStatus("SUCCESS");
       queryClient.invalidateQueries({
         queryKey: ["user-profile"],
