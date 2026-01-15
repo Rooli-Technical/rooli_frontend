@@ -44,24 +44,26 @@ class WorkSpaceService {
     const queries = new URLSearchParams();
 
     if (payload.data?.code) {
-      queries.set("code", payload.data.code);
+      queries.append("code", payload.data.code);
     }
 
     if (payload.data?.state) {
-      queries.set("state", payload.data.state);
+      queries.append("state", payload.data.state);
     }
 
     if (payload.data?.oauth_token) {
-      queries.set("oauth_token", payload.data.oauth_token);
+      queries.append("oauth_token", payload.data.oauth_token);
     }
 
     if (payload.data?.oauth_verifier) {
-      queries.set("oauth_verifier", payload.data.oauth_verifier);
+      queries.append("oauth_verifier", payload.data.oauth_verifier);
     }
 
     const response = await axiosInstance(true).get(
       `/social-connections/callback/${payload.platform}?${queries.toString()}`
     );
+
+    console.log("🚀 ~ file: workspace.service.ts:63 ~ response:", response);
 
     if (response.status === 200 || response.status === 201) {
       return response.data;
