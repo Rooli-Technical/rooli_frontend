@@ -54,23 +54,26 @@ function Page() {
       oauth_verifier?: string;
       oauth_token?: string;
     }) => {
-      const response: any = workSpaceService.connectedSocialsVerification({
-        platform: data.platform as
-          | "TWITTER"
-          | "INSTAGRAM"
-          | "FACEBOOK"
-          | "LINKEDIN",
-        data: {
-          code: data.code,
-          state: data.state,
-          oauth_verifier: data.oauth_verifier,
-          oauth_token: data.oauth_token,
-        },
-      });
+      const response: any = await workSpaceService.connectedSocialsVerification(
+        {
+          // platform: data.platform as
+          //   | "TWITTER"
+          //   | "INSTAGRAM"
+          //   | "FACEBOOK"
+          //   | "LINKEDIN",
+          platform: "INSTAGRAM",
+          data: {
+            code: data.code,
+            state: data.state,
+            oauth_verifier: data.oauth_verifier,
+            oauth_token: data.oauth_token,
+          },
+        }
+      );
 
-      return response.data;
+      return response;
     },
-    onSuccess: (socialData) => {
+    onSuccess: (socialData: any) => {
       console.log("🚀 ~ file: page.tsx:74 ~ socialData:", socialData);
       const { connectionId, availablePages } = socialData;
       console.log("🚀 ~ file: page.tsx:76 ~ availablePages:", availablePages);
