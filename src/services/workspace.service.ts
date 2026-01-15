@@ -63,7 +63,25 @@ class WorkSpaceService {
       `/social-connections/callback/${payload.platform}?${queries.toString()}`
     );
 
-    console.log("🚀 ~ file: workspace.service.ts:63 ~ response:", response);
+    if (response.status === 200 || response.status === 201) {
+      return response.data;
+    }
+
+    throw new Error(response.data.message);
+  }
+
+  async addBulkSocialAccounts(
+    workspaceId: string,
+    payload: {
+      connectionId: string;
+      platform: "TWITTER" | "INSTAGRAM" | "FACEBOOK" | "LINKEDIN";
+      platformIds: string[];
+    }
+  ) {
+    const response = await axiosInstance(true).post(
+      `/workspaces/${workspaceId}/social-profiles`,
+      payload
+    );
 
     if (response.status === 200 || response.status === 201) {
       return response.data;
