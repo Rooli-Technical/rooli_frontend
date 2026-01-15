@@ -157,7 +157,7 @@ function Page() {
         oauth_token: oauth_token || "",
       });
     }
-  }, [isMounted]);
+  }, [isMounted, platform]);
 
   useEffect(() => {
     setIsMounted(true);
