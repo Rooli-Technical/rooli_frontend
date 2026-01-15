@@ -34,8 +34,10 @@ export type CompleteOnboardingPayload = {
 
 export type SocialAccountProps = {
   platform: string;
-  connected: boolean;
+  isActive: boolean;
   username: string;
-  followers: string;
   id: string;
+  followerCount?: number;
+  picture: string | null;
+  name: string;
 };
