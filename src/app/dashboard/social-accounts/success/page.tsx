@@ -54,7 +54,7 @@ function Page() {
       oauth_verifier?: string;
       oauth_token?: string;
     }) => {
-      const response = workSpaceService.connectedSocialsVerification({
+      const response: any = workSpaceService.connectedSocialsVerification({
         platform: data.platform as
           | "TWITTER"
           | "INSTAGRAM"
@@ -68,7 +68,7 @@ function Page() {
         },
       });
 
-      return response;
+      return response.data;
     },
     onSuccess: (socialData) => {
       console.log("🚀 ~ file: page.tsx:74 ~ socialData:", socialData);
