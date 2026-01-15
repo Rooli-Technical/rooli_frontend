@@ -96,7 +96,7 @@ function Page() {
     },
     onError: () => {
       setStatus("ERROR");
-      setPlatform(null);
+
       showToast(
         "Something went wrong with verification, please try again.",
         "error"
@@ -122,7 +122,7 @@ function Page() {
     },
     onSuccess: () => {
       setStatus("SUCCESS");
-      setPlatform(null);
+
       queryClient.invalidateQueries({
         queryKey: ["user-profile"],
       });
@@ -139,7 +139,7 @@ function Page() {
     },
     onError: () => {
       setStatus("ERROR");
-      setPlatform(null);
+
       showToast(
         "Something went wrong with adding social accounts, please try again.",
         "error"
