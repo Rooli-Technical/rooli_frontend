@@ -71,7 +71,9 @@ function Page() {
       return response;
     },
     onSuccess: (socialData) => {
+      console.log("🚀 ~ file: page.tsx:74 ~ socialData:", socialData);
       const { connectionId, availablePages } = socialData;
+      console.log("🚀 ~ file: page.tsx:76 ~ availablePages:", availablePages);
       const items: {
         id: string;
         name: string;
