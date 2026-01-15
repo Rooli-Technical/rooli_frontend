@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/card";
 import workSpaceService from "@/services/workspace.service";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Check, Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
 import React, { useMemo, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SocialAccountProps } from "@/types";
@@ -27,18 +26,20 @@ export default function SocialAccountsPage() {
 
   const { isLoading, data: connectedSocials } = useQuery({
     queryKey: ["workspaces", userProfile?.result?.lastActiveWorkspace],
-    queryFn: async () => {
+    queryFn: async (): Promise<SocialAccountProps[]> => {
       const response = await workSpaceService.getWorkSpaceSocials(
         userProfile?.result?.lastActiveWorkspace
       );
 
-      return response?.data;
+      return response?.data ?? [];
     },
     enabled: !!userProfile?.result?.lastActiveWorkspace,
     retry: false,
     refetchOnMount: false,
     refetchOnWindowFocus: false,
   });
+
+  console.log("🚀 ~ file: page.tsx:29 ~ connectedSocials:", connectedSocials);
 
   const { mutate: connectSocialAccount, isPending: connectingAccount } =
     useMutation({
@@ -79,33 +80,27 @@ export default function SocialAccountsPage() {
       const socials: SocialAccountProps[] = [];
 
       allowedPlatforms.forEach((platform) => {
-        if (connectedSocials?.length === 0) {
+        const connectedSocial = connectedSocials?.find(
+          (social) => social.platform === platform
+        );
+
+        if (connectedSocial) {
+          socials.push(connectedSocial);
+        } else {
           socials.push({
             platform,
-            connected: false,
+            isActive: false,
             username: "",
-            followers: "",
+            followerCount: 0,
             id: "",
+            picture: null,
+            name: "",
           });
         }
-        // const social = data?.result?.socialProfiles?.find(
-        //   (social) => social.platform === platform
-        // );
-        // if (social) {
-        //   socials.push({
-        //     platform: social?.platform || "",
-        //     connected: true,
-        //     username: social?.username || "",
-        //     followers: social?.followers || "",
-        //     id: social?.id || "",
-        //   });
-        // }
       });
 
       return socials;
     }
-
-    // const workspaceSocials = data?.result?.socialProfiles || [];
 
     return [];
   }, [userProfile, connectedSocials, isLoading]);

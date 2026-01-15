@@ -68,7 +68,6 @@ export default function LoginPage() {
       return response?.data;
     },
     onSuccess: (data) => {
-      console.log("🚀 ~ file: page.tsx:69 ~ data:", data);
       const {
         accessToken,
         refreshToken,

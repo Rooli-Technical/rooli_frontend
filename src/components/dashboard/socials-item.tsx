@@ -40,7 +40,7 @@ export default function SocialsItem({
           <h3 className="font-semibold text-base">
             {PlatformNames[item.platform]}
           </h3>
-          {item.connected ? (
+          {item.isActive ? (
             <Badge variant="default" className="bg-accent text-xs">
               Connected
             </Badge>
@@ -51,7 +51,7 @@ export default function SocialsItem({
       </div>
 
       <div className="flex items-center justify-end">
-        {item.connected ? (
+        {item.isActive ? (
           <Button variant="outline" disabled={isLoading}>
             Disconnect
           </Button>
