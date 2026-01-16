@@ -41,3 +41,11 @@ export type SocialAccountProps = {
   picture: string | null;
   name: string;
 };
+
+export type CreateWorkspacePayload = {
+  name: string;
+  clientName: string;
+  clientStatus: string;
+  clientContact: string;
+  clientColor: string;
+};

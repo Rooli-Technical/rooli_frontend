@@ -11,6 +11,8 @@ import useToast from "@/components/app-toast";
 import LogoutModal from "@/components/modals/logout-modal";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import AppSidebar from "@/components/app-sidebar";
+import workSpaceService from "@/services/workspace.service";
+import { useAppStore } from "@/store/app-store";
 
 export default function DashboardLayout({
   children,
@@ -21,8 +23,13 @@ export default function DashboardLayout({
   const router = useProgressBarRouter();
   const [organizationModal, setOrganizationModal] = useState(false);
   const [logoutModal, setLogoutModal] = useState(false);
+  const { setLastWorkspace, lastWorkspace } = useAppStore();
 
-  const { data: userProfile, isLoading } = useQuery({
+  const {
+    data: userProfile,
+    isLoading,
+    refetch: refetchUserProfile,
+  } = useQuery({
     queryKey: ["user-profile"],
     queryFn: async () => {
       const response = await authService.getUserProfile();
@@ -30,8 +37,32 @@ export default function DashboardLayout({
       return response.data;
     },
     retry: false,
-    refetchOnMount: true,
+    refetchOnMount: false,
     refetchOnWindowFocus: false,
+  });
+
+  const {
+    isLoading: workspaceLoading,
+    data: workspaceDetails,
+    refetch: refetchWorkspaceDetails,
+  } = useQuery({
+    queryKey: [
+      "workspace-details",
+      lastWorkspace,
+      userProfile?.result?.organization?.id,
+    ],
+    queryFn: async () => {
+      const response = await workSpaceService.getWorkSpaceById(
+        userProfile?.result?.organization?.id,
+        lastWorkspace || ""
+      );
+
+      return response.data;
+    },
+    retry: false,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    enabled: !!userProfile?.result?.lastActiveWorkspace && !!lastWorkspace,
   });
 
   useEffect(() => {
@@ -50,10 +81,17 @@ export default function DashboardLayout({
         router.replace("/payment-plans");
         return;
       }
+
+      setLastWorkspace(userProfile?.result?.lastActiveWorkspace);
     }
   }, [isLoading, userProfile]);
 
-  if (isLoading) return <PageLoader />;
+  function hardRefetch() {
+    refetchUserProfile();
+    refetchWorkspaceDetails();
+  }
+
+  if (isLoading || workspaceLoading) return <PageLoader />;
 
   return (
     <SidebarProvider>
@@ -62,6 +100,7 @@ export default function DashboardLayout({
           toggleOrganizationModal={() =>
             setOrganizationModal(!organizationModal)
           }
+          currentWorkspace={workspaceDetails ?? null}
         />
 
         <div className=" w-full flex flex-col overflow-hidden">
@@ -77,6 +116,7 @@ export default function DashboardLayout({
         <OrganizationModal
           open={organizationModal}
           setOpen={setOrganizationModal}
+          hardRefetch={hardRefetch}
         />
 
         <LogoutModal open={logoutModal} setOpen={setLogoutModal} />
