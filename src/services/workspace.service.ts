@@ -1,6 +1,44 @@
+import { CreateWorkspacePayload } from "@/types";
 import axiosInstance from "./axios-instance";
 
 class WorkSpaceService {
+  async getAllOrganizationWorkspaces(orgId: string) {
+    const response = await axiosInstance(true).get(
+      `/organizations/${orgId}/workspaces/orgId`
+    );
+
+    if (response.status === 200 || response.status === 201) {
+      return response.data;
+    }
+
+    throw new Error(response.data.message);
+  }
+
+  async createWorkspace(orgId: string, payload: CreateWorkspacePayload) {
+    const response = await axiosInstance(true).post(
+      `/organizations/${orgId}/workspaces/orgId`,
+      payload
+    );
+
+    if (response.status === 200 || response.status === 201) {
+      return response.data;
+    }
+
+    throw new Error(response.data.message);
+  }
+
+  async getWorkSpaceById(orgId: string, workSpaceId: string) {
+    const response = await axiosInstance(true).get(
+      `/organizations/${orgId}/workspaces/${workSpaceId}`
+    );
+
+    if (response.status === 200 || response.status === 201) {
+      return response.data;
+    }
+
+    throw new Error(response.data.message);
+  }
+
   async getWorkSpaceSocials(workspaceId: string) {
     const response = await axiosInstance(true).get(
       `/workspaces/${workspaceId}/social-profiles`

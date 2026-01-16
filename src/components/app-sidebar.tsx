@@ -52,8 +52,10 @@ const bottomNavigation = [
 
 export default function AppSidebar({
   toggleOrganizationModal,
+  currentWorkspace,
 }: {
   toggleOrganizationModal: () => void;
+  currentWorkspace: any;
 }) {
   const pathname = usePathname();
 
@@ -82,9 +84,11 @@ export default function AppSidebar({
             }}
           >
             <div>
-              <p className="text-white text-xs font-semibold">Organization</p>
-              <h2 className="text-white text-sm font-semibold">
+              <p className="text-white text-xs font-semibold">
                 {userOrganization?.name ?? "My Organization"}
+              </p>
+              <h2 className="text-white text-sm font-semibold">
+                {currentWorkspace?.name ?? "My"} Workspace
               </h2>
             </div>
             <ChevronsUpDown color="#fff" size={16} />

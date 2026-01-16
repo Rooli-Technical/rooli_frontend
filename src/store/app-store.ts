@@ -21,6 +21,8 @@ type AuthStoreProps = {
   setPlatform: (
     value: "TWITTER" | "INSTAGRAM" | "FACEBOOK" | "LINKEDIN" | null
   ) => void;
+  lastWorkspace: string | null;
+  setLastWorkspace: (value: string | null) => void;
 };
 
 export const useAppStore = create<AuthStoreProps>()(
@@ -41,6 +43,8 @@ export const useAppStore = create<AuthStoreProps>()(
         setReference: (value) => set({ reference: value }),
         platform: null,
         setPlatform: (value) => set({ platform: value }),
+        lastWorkspace: null,
+        setLastWorkspace: (value) => set({ lastWorkspace: value }),
         clearAuth: () =>
           set({
             accessToken: null,

@@ -64,8 +64,11 @@ export default function DashboardPage() {
 
       {/* Stats Cards */}
       <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-5">
-        {widgets.map((widget) => (
-          <Card className="border-border hover:shadow-lg transition-all duration-300 group">
+        {widgets.map((widget, index) => (
+          <Card
+            key={index}
+            className="border-border hover:shadow-lg transition-all duration-300 group"
+          >
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
               <CardTitle className="text-sm font-medium text-muted-foreground">
                 {widget.title}
