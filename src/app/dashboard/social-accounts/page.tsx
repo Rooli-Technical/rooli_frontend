@@ -16,30 +16,37 @@ import { SocialAccountProps } from "@/types";
 import SocialsItem from "@/components/dashboard/socials-item";
 import useToast from "@/components/app-toast";
 import { useAppStore } from "@/store/app-store";
+import DisconnectModal from "@/components/modals/disconnect-modal";
 
 export default function SocialAccountsPage() {
   const queryClient = useQueryClient();
   const userProfile: any = queryClient.getQueryData(["user-profile"]);
 
   const showToast = useToast();
-  const { setPlatform } = useAppStore();
+  const { setPlatform, lastWorkspace } = useAppStore();
+  const [disconnectOpen, setDisconnectOpen] = useState(false);
+  const [disconnectPlatform, setDisconnectPlatform] = useState<any>(null);
 
-  const { isLoading, data: connectedSocials } = useQuery({
-    queryKey: ["workspaces", userProfile?.result?.lastActiveWorkspace],
+  const {
+    isLoading,
+    data: connectedSocials,
+    isRefetching,
+  } = useQuery({
+    queryKey: ["workspaces", lastWorkspace],
     queryFn: async (): Promise<SocialAccountProps[]> => {
-      const response = await workSpaceService.getWorkSpaceSocials(
-        userProfile?.result?.lastActiveWorkspace
-      );
+      if (lastWorkspace) {
+        const response =
+          await workSpaceService.getWorkSpaceSocials(lastWorkspace);
 
-      return response?.data ?? [];
+        return response?.data ?? [];
+      }
+      return [];
     },
-    enabled: !!userProfile?.result?.lastActiveWorkspace,
+    enabled: !!lastWorkspace,
     retry: false,
     refetchOnMount: false,
     refetchOnWindowFocus: false,
   });
-
-  console.log("🚀 ~ file: page.tsx:29 ~ connectedSocials:", connectedSocials);
 
   const { mutate: connectSocialAccount, isPending: connectingAccount } =
     useMutation({
@@ -56,7 +63,7 @@ export default function SocialAccountsPage() {
         const { url } = data;
         showToast(
           "You will be redirected to connect your social account",
-          "success"
+          "success",
         );
         window.open(url, "_blank");
       },
@@ -69,7 +76,7 @@ export default function SocialAccountsPage() {
     });
 
   const userSocials: SocialAccountProps[] = useMemo(() => {
-    if (!isLoading) {
+    if (!isLoading && !isRefetching) {
       if (!userProfile?.result?.lastActiveWorkspace) return [];
 
       const allowedPlatforms: string[] =
@@ -81,7 +88,7 @@ export default function SocialAccountsPage() {
 
       allowedPlatforms.forEach((platform) => {
         const connectedSocial = connectedSocials?.find(
-          (social) => social.platform === platform
+          (social) => social.platform === platform,
         );
 
         if (connectedSocial) {
@@ -103,7 +110,7 @@ export default function SocialAccountsPage() {
     }
 
     return [];
-  }, [userProfile, connectedSocials, isLoading]);
+  }, [userProfile, connectedSocials, isLoading, isRefetching]);
 
   async function handleConnect(platform: string) {
     connectSocialAccount({
@@ -124,7 +131,7 @@ export default function SocialAccountsPage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          {isLoading && (
+          {(isLoading || isRefetching) && (
             <div className="space-y-4">
               <Skeleton className="h-20" />
               <Skeleton className="h-20" />
@@ -133,7 +140,7 @@ export default function SocialAccountsPage() {
             </div>
           )}
 
-          {!isLoading && userSocials?.length === 0 && (
+          {!isLoading && !isRefetching && userSocials?.length === 0 && (
             <div className="space-y-4 min-h-[250px] flex flex-col items-center justify-center">
               <h2 className="text-xl font-bold text-center">
                 No social accounts connected
@@ -146,7 +153,7 @@ export default function SocialAccountsPage() {
             </div>
           )}
 
-          {!isLoading && userSocials?.length !== 0 && (
+          {!isLoading && !isRefetching && userSocials?.length !== 0 && (
             <div className=" space-y-5">
               {userSocials?.map((social, index) => (
                 <SocialsItem
@@ -154,12 +161,28 @@ export default function SocialAccountsPage() {
                   item={social}
                   onConnect={() => handleConnect(social.platform)}
                   isLoading={connectingAccount}
+                  onDisconnect={() => {
+                    setDisconnectOpen(true);
+                    setDisconnectPlatform(social);
+                  }}
                 />
               ))}
             </div>
           )}
         </CardContent>
       </Card>
+
+      {disconnectPlatform && (
+        <DisconnectModal
+          open={disconnectOpen}
+          setOpen={setDisconnectOpen}
+          platform={disconnectPlatform}
+          handleClose={() => {
+            setDisconnectOpen(false);
+            setDisconnectPlatform(null);
+          }}
+        />
+      )}
     </div>
   );
 }

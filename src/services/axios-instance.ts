@@ -5,7 +5,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 const isTokenExpiredOrExpiringSoon = (
   token: string,
-  bufferMinutes: number = 2
+  bufferMinutes: number = 2,
 ): boolean => {
   try {
     if (!token || token.split(".").length !== 3) {
@@ -100,7 +100,7 @@ const refreshAccessToken = async (): Promise<string> => {
       console.error(
         `Token refresh attempt ${refreshAttempts} failed:`,
         error?.response?.status,
-        error?.message
+        error?.message,
       );
       isRefreshing = false;
       refreshPromise = null;
@@ -125,7 +125,7 @@ const refreshAccessToken = async (): Promise<string> => {
 
 const handleAuthError = () => {
   console.log(
-    "Handling authentication error - clearing tokens and redirecting"
+    "Handling authentication error - clearing tokens and redirecting",
   );
 
   const path = window.location.pathname;
@@ -192,7 +192,7 @@ const axiosInstance = (withAuth: boolean = false) => {
             }
 
             console.log(
-              "Token refreshed successfully, proceeding with request"
+              "Token refreshed successfully, proceeding with request",
             );
           } catch (error) {
             console.error("Proactive token refresh failed:", error);
@@ -210,7 +210,7 @@ const axiosInstance = (withAuth: boolean = false) => {
       (error) => {
         console.error("Request interceptor error:", error);
         return Promise.reject(error);
-      }
+      },
     );
 
     instance.interceptors.response.use(
@@ -223,7 +223,7 @@ const axiosInstance = (withAuth: boolean = false) => {
         console.log(
           "Response interceptor caught error:",
           error.response?.status,
-          error.message
+          error.message,
         );
 
         if (
@@ -275,12 +275,12 @@ const axiosInstance = (withAuth: boolean = false) => {
           }
         }
 
-        if (error.response?.status === 403) {
-          handleAuthError();
-        }
+        // if (error.response?.status === 403) {
+        //   handleAuthError();
+        // }
 
         return Promise.reject(error);
-      }
+      },
     );
   }
 

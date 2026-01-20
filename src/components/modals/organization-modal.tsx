@@ -49,11 +49,11 @@ export default function OrganizationModal({
   const queryClient = useQueryClient();
   const userProfile: any = queryClient.getQueryData(["user-profile"]);
   const [currentWorkspace, setCurrentWorkspace] = useState<string>(
-    lastWorkspace ?? userProfile?.result?.lastActiveWorkspace ?? ""
+    lastWorkspace ?? userProfile?.result?.lastActiveWorkspace ?? "",
   );
 
   const [currentTab, setCurrentTab] = useState<"WORKSPACE" | "CREATE">(
-    "WORKSPACE"
+    "WORKSPACE",
   );
 
   const form = useForm<FormSchema>({
@@ -69,7 +69,7 @@ export default function OrganizationModal({
     queryKey: ["organization-worspaces", userProfile?.result?.organization?.id],
     queryFn: async () => {
       const response = await workSpaceService.getAllOrganizationWorkspaces(
-        userProfile?.result?.organization?.id
+        userProfile?.result?.organization?.id,
       );
 
       return response.data;
@@ -84,7 +84,7 @@ export default function OrganizationModal({
     mutationFn: async (payload: CreateWorkspacePayload) => {
       const response = await workSpaceService.createWorkspace(
         userProfile?.result?.organization?.id,
-        payload
+        payload,
       );
 
       return response.data;
@@ -96,16 +96,54 @@ export default function OrganizationModal({
           userProfile?.result?.organization?.id,
         ],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["user-profile"],
+      });
       setCurrentTab("WORKSPACE");
       showToast("Workspace created successfully", "success");
     },
     onError: (error: any) => {
       showToast(
         error?.response?.data?.message || "Failed to create workspace",
-        "error"
+        "error",
       );
     },
   });
+
+  const { isPending: isSwitchingWorkspace, mutateAsync: switchWorkspace } =
+    useMutation({
+      mutationKey: ["switch-workspace"],
+      mutationFn: async () => {
+        const payload = {
+          orgId: userProfile?.result?.organization?.id,
+          workSpaceId: currentWorkspace,
+        };
+        const response = await workSpaceService.switchWorkSpace(payload);
+        return response.data;
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: [
+            "organization-worspaces",
+            userProfile?.result?.organization?.id,
+          ],
+        });
+        queryClient.invalidateQueries({
+          queryKey: ["user-profile"],
+        });
+        setCurrentTab("WORKSPACE");
+        setLastWorkspace(currentWorkspace);
+        hardRefetch();
+        showToast("Switched workspace successfully", "success");
+        setOpen(false);
+      },
+      onError: (error: any) => {
+        showToast(
+          error?.response?.data?.message || "Failed to switch workspace",
+          "error",
+        );
+      },
+    });
 
   async function onSubmit(payload: FormSchema) {
     const userPayload: CreateWorkspacePayload = {
@@ -119,10 +157,7 @@ export default function OrganizationModal({
   }
 
   function handleSwitchWorkspace() {
-    setLastWorkspace(currentWorkspace);
-
-    hardRefetch();
-    setOpen(false);
+    switchWorkspace();
   }
 
   return (
@@ -153,12 +188,14 @@ export default function OrganizationModal({
                           : "text-muted-foreground hover:text-white"
                       }`}
                       onClick={() => {
-                        setCurrentWorkspace(workspace.id);
+                        if (!isSwitchingWorkspace) {
+                          setCurrentWorkspace(workspace.id);
+                        }
                       }}
                     >
                       {workspace.name}
                     </div>
-                  )
+                  ),
                 )}
 
               {isLoading && (
@@ -172,10 +209,17 @@ export default function OrganizationModal({
               <Button
                 onClick={() => setCurrentTab("CREATE")}
                 variant={"outline"}
+                disabled={isSwitchingWorkspace}
               >
                 Add Workspace
               </Button>
-              <Button onClick={handleSwitchWorkspace}>Switch Workspace</Button>
+              <Button
+                disabled={isSwitchingWorkspace}
+                onClick={handleSwitchWorkspace}
+              >
+                {" "}
+                {isSwitchingWorkspace && <Spinner />} Switch Workspace
+              </Button>
             </DialogFooter>
           </>
         )}
