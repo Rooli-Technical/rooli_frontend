@@ -4,7 +4,7 @@ import axiosInstance from "./axios-instance";
 class WorkSpaceService {
   async getAllOrganizationWorkspaces(orgId: string) {
     const response = await axiosInstance(true).get(
-      `/organizations/${orgId}/workspaces/orgId`
+      `/organizations/${orgId}/workspaces/orgId`,
     );
 
     if (response.status === 200 || response.status === 201) {
@@ -17,7 +17,7 @@ class WorkSpaceService {
   async createWorkspace(orgId: string, payload: CreateWorkspacePayload) {
     const response = await axiosInstance(true).post(
       `/organizations/${orgId}/workspaces/orgId`,
-      payload
+      payload,
     );
 
     if (response.status === 200 || response.status === 201) {
@@ -29,7 +29,7 @@ class WorkSpaceService {
 
   async getWorkSpaceById(orgId: string, workSpaceId: string) {
     const response = await axiosInstance(true).get(
-      `/organizations/${orgId}/workspaces/${workSpaceId}`
+      `/organizations/${orgId}/workspaces/${workSpaceId}`,
     );
 
     if (response.status === 200 || response.status === 201) {
@@ -41,7 +41,7 @@ class WorkSpaceService {
 
   async getWorkSpaceSocials(workspaceId: string) {
     const response = await axiosInstance(true).get(
-      `/workspaces/${workspaceId}/social-profiles`
+      `/workspaces/${workspaceId}/social-profiles`,
     );
 
     if (response.status === 200 || response.status === 201) {
@@ -60,7 +60,7 @@ class WorkSpaceService {
     queries.set("organizationId", payload.organizationId);
 
     const response = await axiosInstance(true).get(
-      `/social-connections/auth-url?${queries.toString()}`
+      `/social-connections/auth-url?${queries.toString()}`,
     );
 
     if (response.status === 200 || response.status === 201) {
@@ -98,7 +98,7 @@ class WorkSpaceService {
     }
 
     const response = await axiosInstance(true).get(
-      `/social-connections/callback/${payload.platform}?${queries.toString()}`
+      `/social-connections/callback/${payload.platform}?${queries.toString()}`,
     );
 
     if (response.status === 200 || response.status === 201) {
@@ -114,11 +114,40 @@ class WorkSpaceService {
       connectionId: string;
       platform: "TWITTER" | "INSTAGRAM" | "FACEBOOK" | "LINKEDIN";
       platformIds: string[];
-    }
+    },
   ) {
     const response = await axiosInstance(true).post(
       `/workspaces/${workspaceId}/social-profiles`,
-      payload
+      payload,
+    );
+
+    if (response.status === 200 || response.status === 201) {
+      return response.data;
+    }
+
+    throw new Error(response.data.message);
+  }
+
+  async disconnectSocialAccount(organizationId: string, connectionId: string) {
+    const queries = new URLSearchParams();
+    if (organizationId) {
+      queries.set("organizationId", organizationId);
+    }
+
+    const response = await axiosInstance(true).delete(
+      `/social-connections/${connectionId}?${queries.toString()}`,
+    );
+
+    if (response.status === 200 || response.status === 201) {
+      return response.data;
+    }
+
+    throw new Error(response.data.message);
+  }
+
+  async switchWorkSpace(payload: { orgId: string; workSpaceId: string }) {
+    const response = await axiosInstance(true).post(
+      `/organizations/${payload.orgId}/workspaces/${payload.workSpaceId}/switch`,
     );
 
     if (response.status === 200 || response.status === 201) {

@@ -30,11 +30,7 @@ import {
   CreditCard,
   Trash2,
   Camera,
-  Check,
   Instagram,
-  Twitter,
-  Facebook,
-  Linkedin,
 } from "lucide-react";
 
 export default function SettingsPage() {

@@ -19,10 +19,12 @@ export default function SocialsItem({
   item,
   onConnect,
   isLoading,
+  onDisconnect,
 }: {
   item: SocialAccountProps;
   onConnect: () => void;
   isLoading: boolean;
+  onDisconnect: () => void;
 }) {
   const PlatformIcon =
     {
@@ -52,7 +54,7 @@ export default function SocialsItem({
 
       <div className="flex items-center justify-end">
         {item.isActive ? (
-          <Button variant="outline" disabled={isLoading}>
+          <Button variant="outline" disabled={isLoading} onClick={onDisconnect}>
             Disconnect
           </Button>
         ) : (
