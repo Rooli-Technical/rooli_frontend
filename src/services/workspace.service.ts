@@ -156,6 +156,18 @@ class WorkSpaceService {
 
     throw new Error(response.data.message);
   }
+
+  async getWorkspaceSocialProfiles(workspaceId: string) {
+    const response = await axiosInstance(true).get(
+      `/workspaces/${workspaceId}/social-profiles`,
+    );
+
+    if (response.status === 200 || response.status === 201) {
+      return response.data;
+    }
+
+    throw new Error(response.data.message);
+  }
 }
 
 const workSpaceService = new WorkSpaceService();
