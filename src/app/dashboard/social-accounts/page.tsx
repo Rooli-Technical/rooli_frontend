@@ -95,7 +95,11 @@ export default function SocialAccountsPage() {
           socials.push(connectedSocial);
         } else {
           socials.push({
-            platform,
+            platform: platform as
+              | "TWITTER"
+              | "INSTAGRAM"
+              | "FACEBOOK"
+              | "LINKEDIN",
             isActive: false,
             username: "",
             followerCount: 0,

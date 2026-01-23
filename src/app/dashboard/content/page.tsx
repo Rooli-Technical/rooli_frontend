@@ -46,6 +46,10 @@ import {
   FolderOpen,
 } from "lucide-react";
 import PageHeader from "@/components/page-header";
+import { useQuery } from "@tanstack/react-query";
+import { useAppStore } from "@/store/app-store";
+import postService from "@/services/post.service";
+import PostsListSection from "@/components/posts-list-section";
 
 const mockMedia = [
   {
@@ -131,6 +135,7 @@ export default function ContentLibraryPage() {
   const [view, setView] = useState<"grid" | "list">("grid");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFolder, setSelectedFolder] = useState<number | null>(null);
+  const { lastWorkspace } = useAppStore();
 
   return (
     <div className="space-y-6">
@@ -140,38 +145,10 @@ export default function ContentLibraryPage() {
           title="Content Library"
           description="Organize and manage your media files and content templates"
         />
-        {/* <div className="flex items-center space-x-2">
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button className="bg-primary hover:bg-primary/90">
-                <Upload className="mr-2 h-4 w-4" />
-                Upload Media
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Upload Media</DialogTitle>
-                <DialogDescription>
-                  Upload images, videos, or other media files to your library
-                </DialogDescription>
-              </DialogHeader>
-              <div className="border-2 border-dashed border-border rounded-lg p-8 text-center">
-                <Upload className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-                <p className="text-lg font-medium mb-2">
-                  Drop files here or click to browse
-                </p>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Supports JPG, PNG, GIF, MP4, MOV up to 50MB
-                </p>
-                <Button>Choose Files</Button>
-              </div>
-            </DialogContent>
-          </Dialog>
-        </div> */}
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      {/* <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card className="border-border">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
@@ -222,7 +199,7 @@ export default function ContentLibraryPage() {
             </div>
           </CardContent>
         </Card>
-      </div>
+      </div> */}
 
       <Tabs defaultValue="media" className="w-full">
         <TabsList className="grid w-full grid-cols-3">
@@ -232,8 +209,9 @@ export default function ContentLibraryPage() {
         </TabsList>
 
         <TabsContent value="media" className="space-y-4">
-          {/* Filters and Search */}
-          <div className="flex items-center justify-between">
+          <PostsListSection />
+
+          {/* <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
@@ -267,7 +245,7 @@ export default function ContentLibraryPage() {
             </div>
           </div>
 
-          {/* Media Grid */}
+         
           {view === "grid" ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {mockMedia.map((item) => (
@@ -421,7 +399,7 @@ export default function ContentLibraryPage() {
                 </Card>
               ))}
             </div>
-          )}
+          )} */}
         </TabsContent>
 
         <TabsContent value="templates" className="space-y-4">

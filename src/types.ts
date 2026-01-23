@@ -33,7 +33,7 @@ export type CompleteOnboardingPayload = {
 };
 
 export type SocialAccountProps = {
-  platform: string;
+  platform: "LINKEDIN" | "INSTAGRAM" | "TWITTER" | "FACEBOOK";
   isActive: boolean;
   username: string;
   id: string;
@@ -48,4 +48,48 @@ export type CreateWorkspacePayload = {
   clientStatus: string;
   clientContact: string;
   clientColor: string;
+};
+
+export type UploadedFileType = {
+  id: string;
+  workspaceId: string;
+  userId: string;
+  folderId: string | null;
+  filename: string;
+  originalName: string;
+  mimeType: string;
+  size: string;
+  url: string;
+  publicId: string;
+  thumbnailUrl: string;
+  width: number;
+  height: number;
+  duration: number | null;
+  isAiGenerated: boolean;
+  aiProvider: string | null;
+  aiPrompt: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type CreatePostPayload = {
+  content: string;
+  contentType: "POST" | "REEL" | "STORY" | "THREAD";
+  socialProfileIds: string[];
+  mediaIds?: string[];
+  timezone: string;
+  scheduledAt: string;
+  isAutoSchedule?: boolean;
+  campaignId?: string;
+  labelIds?: string[];
+  needsApproval?: boolean;
+  overrides?: {
+    socialProfileId: string;
+    content: string;
+  }[];
+  threads?: {
+    content: string;
+    mediaIds?: string[];
+    targetProfileIds?: string[];
+  }[];
 };
