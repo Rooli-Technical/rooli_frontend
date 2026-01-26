@@ -25,13 +25,15 @@ export function MediaUpload({
   const showToast = useToast();
 
   const [previews, setPreviews] = React.useState<UploadedFileType[]>([]);
-  console.log("🚀 ~ file: media-upload.tsx:33 ~ previews:", previews);
 
   const fileInputRef = React.useRef<HTMLInputElement>(null);
-  const [croppingImage, setCroppingImage] = React.useState<{
-    src: string;
-    file: File;
-  } | null>(null);
+
+  const [croppingQueue, setCroppingQueue] = React.useState<
+    { src: string; file: File }[]
+  >([]);
+  const [currentCroppingIndex, setCurrentCroppingIndex] =
+    React.useState<number>(0);
+  const [pendingFiles, setPendingFiles] = React.useState<File[]>([]);
 
   const MAX_FILE_SIZE = 8 * 1024 * 1024; // 8MB
   const MAX_FILES = 5;
@@ -78,8 +80,8 @@ export function MediaUpload({
     }
 
     // Validate file sizes and types
-    const validFiles: File[] = [];
-    const imagesToCrop: File[] = [];
+    const imagesToCrop: { src: string; file: File }[] = [];
+    const otherFiles: File[] = [];
 
     for (const file of files) {
       if (file.size > MAX_FILE_SIZE) {
@@ -88,38 +90,58 @@ export function MediaUpload({
       }
 
       if (file.type.startsWith("image/")) {
-        imagesToCrop.push(file);
+        const src = await new Promise<string>((resolve) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result as string);
+          reader.readAsDataURL(file);
+        });
+        imagesToCrop.push({ src, file });
       } else {
-        validFiles.push(file);
+        otherFiles.push(file);
       }
     }
 
     if (imagesToCrop.length > 0) {
-      // For now, we only handle one crop at a time for simplicity
-      // In a real app, you might queue them
-      const reader = new FileReader();
-      reader.onload = () => {
-        setCroppingImage({
-          src: reader.result as string,
-          file: imagesToCrop[0],
-        });
-      };
-      reader.readAsDataURL(imagesToCrop[0]);
-
-      // If there are other files, we can upload them separately or wait
-      if (validFiles.length > 0) {
-        mutateAsync(validFiles);
-      }
-    } else if (validFiles.length > 0) {
-      mutateAsync(validFiles);
+      setPendingFiles(otherFiles);
+      setCroppingQueue(imagesToCrop);
+      setCurrentCroppingIndex(0);
+    } else if (otherFiles.length > 0) {
+      mutateAsync(otherFiles);
     }
 
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
-  const handleCropComplete = async (croppedFile: File) => {
-    setCroppingImage(null);
-    mutateAsync([croppedFile]);
+  const handleCropComplete = (croppedFile: File) => {
+    const updatedPending = [...pendingFiles, croppedFile];
+    const nextIndex = currentCroppingIndex + 1;
+
+    if (nextIndex < croppingQueue.length) {
+      setPendingFiles(updatedPending);
+      setCurrentCroppingIndex(nextIndex);
+    } else {
+      mutateAsync(updatedPending);
+      resetCroppingState();
+    }
+  };
+
+  const handleCropCancel = () => {
+    const nextIndex = currentCroppingIndex + 1;
+
+    if (nextIndex < croppingQueue.length) {
+      setCurrentCroppingIndex(nextIndex);
+    } else {
+      if (pendingFiles.length > 0) {
+        mutateAsync(pendingFiles);
+      }
+      resetCroppingState();
+    }
+  };
+
+  const resetCroppingState = () => {
+    setCroppingQueue([]);
+    setCurrentCroppingIndex(0);
+    setPendingFiles([]);
   };
 
   const handleDelete = async (id: string) => {
@@ -135,6 +157,8 @@ export function MediaUpload({
       toast.error(error.message || "Failed to delete media.");
     }
   };
+
+  const currentCroppingImage = croppingQueue[currentCroppingIndex];
 
   return (
     <div className="space-y-4">
@@ -199,12 +223,12 @@ export function MediaUpload({
         Max {MAX_FILES} files. Images and videos up to 8MB each.
       </p>
 
-      {croppingImage && (
+      {currentCroppingImage && (
         <ImageCropper
-          imageSrc={croppingImage.src}
-          open={!!croppingImage}
+          imageSrc={currentCroppingImage.src}
+          open={!!currentCroppingImage}
           onCropComplete={handleCropComplete}
-          onCancel={() => setCroppingImage(null)}
+          onCancel={handleCropCancel}
         />
       )}
     </div>

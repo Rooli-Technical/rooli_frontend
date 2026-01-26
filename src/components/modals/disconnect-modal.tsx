@@ -25,7 +25,6 @@ export default function DisconnectModal({
 
   handleClose: () => void;
 }) {
-  console.log("🚀 ~ file: disconnect-modal.tsx:25 ~ platform:", platform);
   const showToast = useToast();
   const queryClient = useQueryClient();
   const userProfile: any = queryClient.getQueryData(["user-profile"]);

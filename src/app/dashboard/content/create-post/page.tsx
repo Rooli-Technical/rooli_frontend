@@ -158,7 +158,6 @@ export default function Page() {
       router.push(`/dashboard/content`);
     },
     onError: (error: any) => {
-      console.log("🚀 ~ file: page.tsx:148 ~ .onError ~ error:", error);
       showToast(
         error?.response?.data?.message || "Failed to create post",
         "error",
