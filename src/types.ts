@@ -93,3 +93,37 @@ export type CreatePostPayload = {
     targetProfileIds?: string[];
   }[];
 };
+
+export type SocialPlatforms = "LINKEDIN" | "INSTAGRAM" | "TWITTER" | "FACEBOOK";
+
+export type PostType = {
+  id: string;
+  workspaceId: string;
+  userId: string;
+  authorId: string;
+  author: { email: string; firstName: string };
+  childPosts: any[];
+  content: string;
+  destinations: DestinationType[];
+  media: MediaType[];
+  contentType: ContentType;
+  parentPost: any;
+  publishedAt: string | null;
+  scheduledAt: string | null;
+  status: string;
+};
+
+export type DestinationType = {
+  id: string;
+  contentOverride: string;
+  postId: string;
+  profile: { id: string; name: string; platform: SocialPlatforms };
+};
+
+export type MediaType = {
+  id: string;
+  mediaFile: { id: string; url: string; mimeType: string };
+  order: number;
+};
+
+export type ContentType = "POST" | "REEL" | "STORY" | "THREAD";

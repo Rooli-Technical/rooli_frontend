@@ -37,6 +37,12 @@ export function ImageCropper({
   const [aspect, setAspect] = React.useState(ASPECT_RATIOS[0].value);
   const [croppedAreaPixels, setCroppedAreaPixels] = React.useState<any>(null);
 
+  React.useEffect(() => {
+    setCrop({ x: 0, y: 0 });
+    setZoom(1);
+    setCroppedAreaPixels(null);
+  }, [imageSrc]);
+
   const onCropChange = (crop: { x: number; y: number }) => {
     setCrop(crop);
   };

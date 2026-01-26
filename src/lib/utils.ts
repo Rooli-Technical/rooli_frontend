@@ -53,3 +53,10 @@ export function addCommas(value: number | string): string {
   // Combine with decimal part if it exists
   return decimalPart ? `${formattedInteger}.${decimalPart}` : formattedInteger;
 }
+
+export function shortenText(text: string, maxLength: number): string {
+  if (text.length <= maxLength) {
+    return text;
+  }
+  return text.slice(0, maxLength) + "...";
+}

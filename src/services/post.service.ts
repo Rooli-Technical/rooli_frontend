@@ -49,6 +49,30 @@ class PostService {
 
     throw new Error(response.data.message);
   }
+
+  async getPostById(workSpaceId: string, postId: string) {
+    const response = await axiosInstance(true).get(
+      `/workspaces/${workSpaceId}/posts/${postId}`,
+    );
+
+    if (response.status === 200) {
+      return response.data;
+    }
+
+    throw new Error(response.data.message);
+  }
+
+  async deletePost(workspaceId: string, postId: string) {
+    const response = await axiosInstance(true).delete(
+      `/workspaces/${workspaceId}/posts/${postId}`,
+    );
+
+    if (response.status === 200) {
+      return response.data;
+    }
+
+    throw new Error(response.data.message);
+  }
 }
 
 const postService = new PostService();
