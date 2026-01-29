@@ -9,11 +9,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useProgressBarRouter } from "@/hooks/use-progress-bar-router";
 import postService from "@/services/post.service";
 import { useAppStore } from "@/store/app-store";
-import { PostType } from "@/types";
+import { DestinationThreadType, PostType } from "@/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Trash } from "iconsax-reactjs";
 import { useParams } from "next/navigation";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 export default function Page() {
   const { lastWorkspace } = useAppStore();
@@ -40,6 +40,18 @@ export default function Page() {
     refetchOnMount: true,
     refetchOnWindowFocus: false,
   });
+
+  const destinations: DestinationThreadType[] = data?.data?.destinations;
+
+  const postThreads = useMemo(() => {
+    if (!destinations) return [];
+
+    const destinationWithThread = destinations.find(
+      (dest) => dest.thread && dest.thread.length > 0,
+    );
+
+    return destinationWithThread?.thread || [];
+  }, [destinations]);
 
   const { isPending, mutateAsync } = useMutation({
     mutationKey: ["delete-post", postId, lastWorkspace],
@@ -109,6 +121,30 @@ export default function Page() {
                 </p>
               </div>
             </div>
+
+            {/* Post Threads */}
+            {postThreads && postThreads.length > 0 && (
+              <div className="space-y-4">
+                <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground border-l-4 border-primary pl-3">
+                  Thread Items
+                </h2>
+                <div className="flex flex-col gap-4">
+                  {postThreads.map((thread, index) => (
+                    <div
+                      key={index}
+                      className="p-6 rounded-2xl bg-accent/5 border border-border/50 relative"
+                    >
+                      <div className="absolute -left-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-[10px] font-bold shadow-lg">
+                        {index + 1}
+                      </div>
+                      <p className="text-foreground/80 whitespace-pre-wrap">
+                        {thread.content}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Media Gallery */}
             <div className="space-y-4">

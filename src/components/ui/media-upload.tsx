@@ -15,12 +15,14 @@ interface MediaUploadProps {
   value?: string[];
   onChange?: (value: string[]) => void;
   workspaceId: string;
+  maxFiles?: number;
 }
 
 export function MediaUpload({
   value = [],
   onChange,
   workspaceId,
+  maxFiles = 5,
 }: MediaUploadProps) {
   const showToast = useToast();
 
@@ -36,7 +38,7 @@ export function MediaUpload({
   const [pendingFiles, setPendingFiles] = React.useState<File[]>([]);
 
   const MAX_FILE_SIZE = 8 * 1024 * 1024; // 8MB
-  const MAX_FILES = 5;
+  const MAX_FILES = maxFiles || 5;
 
   const { isPending, mutateAsync } = useMutation({
     mutationKey: ["upload-medias"],

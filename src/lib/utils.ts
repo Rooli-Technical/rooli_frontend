@@ -55,8 +55,59 @@ export function addCommas(value: number | string): string {
 }
 
 export function shortenText(text: string, maxLength: number): string {
-  if (text.length <= maxLength) {
+  if (text?.length <= maxLength) {
     return text;
   }
-  return text.slice(0, maxLength) + "...";
+  return text?.slice(0, maxLength) + "...";
+}
+
+export function getWordCount(text: string): number {
+  if (!text) return 0;
+  return text
+    .trim()
+    .split(/\s+/)
+    .filter((word) => word.length > 0).length;
+}
+
+export function splitTextByWords(text: string, maxWords: number): string[] {
+  if (!text) return [];
+  const words = text.trim().split(/\s+/);
+  if (words.length <= maxWords) return [text];
+
+  const chunks: string[] = [];
+  for (let i = 0; i < words.length; i += maxWords) {
+    chunks.push(words.slice(i, i + maxWords).join(" "));
+  }
+  return chunks;
+}
+
+export function splitTextByCharacters(
+  text: string,
+  maxChars: number,
+): string[] {
+  if (!text) return [];
+  if (text.length <= maxChars) return [text];
+
+  const chunks: string[] = [];
+  let currentText = text.trim();
+
+  while (currentText.length > 0) {
+    if (currentText.length <= maxChars) {
+      chunks.push(currentText);
+      break;
+    }
+
+    // Try to find the last space within the limit
+    let splitIndex = currentText.lastIndexOf(" ", maxChars);
+
+    // If no space is found, just split at the character limit
+    if (splitIndex === -1) {
+      splitIndex = maxChars;
+    }
+
+    chunks.push(currentText.substring(0, splitIndex).trim());
+    currentText = currentText.substring(splitIndex).trim();
+  }
+
+  return chunks;
 }

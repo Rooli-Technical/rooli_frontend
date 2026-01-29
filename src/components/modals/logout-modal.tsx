@@ -12,7 +12,7 @@ import {
 import { Button } from "../ui/button";
 import useToast from "../app-toast";
 import authService from "@/services/auth.service";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useProgressBarRouter } from "@/hooks/use-progress-bar-router";
 import { useAppStore } from "@/store/app-store";
 import { Spinner } from "../ui/spinner";
@@ -28,6 +28,7 @@ export default function LogoutModal({
   const router = useProgressBarRouter();
 
   const { clearAuth } = useAppStore();
+  const queryClient = useQueryClient();
 
   const { isPending, mutateAsync } = useMutation({
     mutationKey: ["logout-user"],
@@ -38,6 +39,7 @@ export default function LogoutModal({
       showToast("You have been logged out successfully", "success");
       setOpen(false);
       clearAuth();
+      queryClient.clear();
       router.replace("/auth/login");
     },
     onError: (error: any) => {
