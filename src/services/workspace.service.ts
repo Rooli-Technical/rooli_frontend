@@ -168,6 +168,18 @@ class WorkSpaceService {
 
     throw new Error(response.data.message);
   }
+
+  async deleteWorkspace(orgId: string, workSpaceId: string) {
+    const response = await axiosInstance(true).delete(
+      `/organizations/${orgId}/workspaces/${workSpaceId}`,
+    );
+
+    if (response.status === 200 || response.status === 201) {
+      return response.data;
+    }
+
+    throw new Error(response.data.message);
+  }
 }
 
 const workSpaceService = new WorkSpaceService();

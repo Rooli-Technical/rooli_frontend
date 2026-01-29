@@ -32,7 +32,6 @@ const contentTypes: Record<string, string> = {
 export default function PostsListSection() {
   const { lastWorkspace } = useAppStore();
   const [page, setPage] = useState(1);
-  const limit = 12;
 
   const { isLoading, data, isRefetching } = useQuery({
     queryKey: ["workspace-posts", lastWorkspace, page],
@@ -41,7 +40,7 @@ export default function PostsListSection() {
       if (lastWorkspace) {
         const response = await postService.getWorkspacePosts(lastWorkspace, {
           page,
-          limit,
+          limit: 8,
         });
         return response.data;
       }
@@ -132,7 +131,7 @@ export default function PostsListSection() {
           ))}
 
         {(isLoading || isRefetching) &&
-          Array(limit)
+          Array(8)
             .fill(0)
             .map((_, index) => (
               <Skeleton key={index} className="w-full h-[300px]" />

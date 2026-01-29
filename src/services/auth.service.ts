@@ -51,6 +51,7 @@ class AuthService {
     const response = await axiosInstance(true).post("/auth/logout");
 
     if (response.status === 200 || response.status === 201) {
+      localStorage.clear();
       return response.data;
     }
 
@@ -59,7 +60,7 @@ class AuthService {
 
   async verifyNewUserEmail(token: string) {
     const response = await axiosInstance(false).post(
-      `/auth/verify-email?token=${token}`
+      `/auth/verify-email?token=${token}`,
     );
 
     if (response.status === 200 || response.status === 201) {
@@ -72,7 +73,7 @@ class AuthService {
   async resendVerificationEmail(payload: { email: string }) {
     const response = await axiosInstance(false).post(
       `/auth/resend-verification`,
-      payload
+      payload,
     );
 
     if (response.status === 200 || response.status === 201) {
@@ -85,7 +86,7 @@ class AuthService {
   async requestPasswordReset(payload: { email: string }) {
     const response = await axiosInstance(false).post(
       `/auth/forgot-password`,
-      payload
+      payload,
     );
 
     if (response.status === 200 || response.status === 201) {
@@ -98,7 +99,7 @@ class AuthService {
   async resetPassword(payload: { password: string; token: string }) {
     const response = await axiosInstance(false).post(
       `/auth/reset-password`,
-      payload
+      payload,
     );
 
     if (response.status === 200 || response.status === 201) {
@@ -121,7 +122,7 @@ class AuthService {
   async completeOnboarding(payload: CompleteOnboardingPayload) {
     const response = await axiosInstance(true).post(
       "/auth/onboarding",
-      payload
+      payload,
     );
 
     if (response.status === 200 || response.status === 201) {

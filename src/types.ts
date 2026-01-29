@@ -127,3 +127,22 @@ export type MediaType = {
 };
 
 export type ContentType = "POST" | "REEL" | "STORY" | "THREAD";
+
+export type DestinationThreadType = {
+  contentOverride: string;
+  id: string;
+  metadata: any;
+  postId: string;
+  profile: {
+    id: string;
+    name: string;
+    platform: SocialPlatforms;
+    type: string;
+    picture: string;
+  };
+  thread: {
+    content: string;
+    mediaIds: string[];
+    targetProfileIds: string[];
+  }[];
+};
